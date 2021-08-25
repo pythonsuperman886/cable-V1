@@ -17,6 +17,8 @@ public:
     void init(string data_path);
     void train();
     void stop_train();
+    Mat combine;
+
 private:
     std::ofstream ofs;
     bool Is_continue_train =true;
@@ -38,7 +40,6 @@ private:
     int lambda_L1 = 100;
 
     int num_samples;
-
     std::tuple<torch::Tensor, torch::Tensor, std::vector<std::string>, std::vector<std::string>> mini_batch;
 
     ImageFolderWithPaths dataset;

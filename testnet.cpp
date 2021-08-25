@@ -6,7 +6,7 @@
 Testnet::Testnet():
             cuda_available (torch::cuda::is_available() ),
             device(Device(cuda_available ? torch::kCUDA : torch::kCPU)),
-            G(UNet_Generator(1,1)){
+            G(UNet_Generator(1,1)),rectangle_color(255){
 
 }
 void Testnet::init(string model_path_){
@@ -16,8 +16,39 @@ void Testnet::init(string model_path_){
     G->to(device);
     G->eval();
 };
+vector<Mat> Testnet::rectangle_cable_defect( Mat& fake_image,Mat &real_image) {
 
-Mat Testnet::Test(Mat image){
+    cv::Mat   labels,  stats,centroids;
+    Mat rectangle_image_fake = fake_image.clone();
+    Mat rectangle_image_real = real_image.clone();
+    cvtColor(rectangle_image_real,rectangle_image_real,CV_GRAY2BGR);
+    cvtColor(rectangle_image_fake,rectangle_image_fake,CV_GRAY2BGR);
+    int nccomps = cv::connectedComponentsWithStats (
+            fake_image, labels,
+            stats, centroids
+            );
+    for( int y = 0; y < fake_image.rows; y++ )
+        for( int x = 0; x < fake_image.cols; x++ )
+        {
+            int label = labels.at<int>(y, x);
+            CV_Assert(0 <= label && label <= nccomps);
+            if( stats.at<int>(label, cv::CC_STAT_AREA) >defect_threhold && label !=0){
+                int x_l = stats.at<int>(label, cv::CC_STAT_LEFT);
+                int y_l = stats.at<int>(label, cv::CC_STAT_TOP);
+                int w = stats.at<int>(label, cv::CC_STAT_WIDTH);
+                int h = stats.at<int>(label, cv::CC_STAT_HEIGHT);
+                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,255));
+                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,255));
+
+            }
+        }
+    vector<Mat> rectangle_images={rectangle_image_real,
+                                  rectangle_image_fake};
+
+        return rectangle_images;
+        //        cv::imwrite("fake"+to_string(i)+".jpg",imgbin);
+}
+vector<Mat> Testnet::Test(const Mat& image){
 
     Mat resize_image;
     resize(image,resize_image,Size(128,128));
@@ -27,37 +58,39 @@ Mat Testnet::Test(Mat image){
 
     Mat out;
 //    for(int i =1;i<15;i++){
-    tm.reset();
-    tm.start();
+//    tm.reset();
+//    tm.start();
     Tensor input = Mat2Tensor(resize_image);
     input = input.to(device);
 
     Tensor fake_B;
     fake_B = G->forward(input);
     out = Tensor2Mat(fake_B);
-
-    tm.stop();
-    cout<<"time forward: "<<tm.getTimeMilli()<<endl;
+    vector<Mat> rectangle_mat = rectangle_cable_defect(out,resize_image);
+//    tm.stop();
+//    cout<<"time forward: "<<tm.getTimeMilli()<<endl;
 //    cout<<" grade "<<fake_B.requires_grad()<<endl;
 
 
-    vector<Mat> ouputs={
-            resize_image,out
-    };
+//    vector<Mat> ouputs = {
+//            rectangle_mat[0],rectangle_mat[1]
+//    };
 
     Mat combine;
-    hconcat(ouputs,combine);
+    hconcat(rectangle_mat,combine);
 //    }
 //    fake_B = fake_B.mul(255).add(0.5).clamp(0, 255).permute({0,3,1,2}).to(torch::kU8);
 //    fake_B = fake_B.to(torch::kCPU);
 //    cv::Mat imgbin(cv::Size(image_resize_num, image_resize_num), CV_8U, fake_B.data_ptr());
-    imwrite("../checkpoints/test_results/"+to_string(test_num)+".png",combine);
+    imwrite("../checkpoints/test_results/"+to_string(test_num)+".png",combine.clone());
     test_num++;
-    return out.clone();
+    return rectangle_mat;
 
 }
 
 Testnet::~Testnet() {
 //    delete G;
 
-};
+}
+
+

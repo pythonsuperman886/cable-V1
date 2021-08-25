@@ -16,6 +16,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_test_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_defect_result->setStyleSheet("QLabel{background:#000000;}");
+    ui->label_train_result->setStyleSheet("QLabel{background:#000000;}");
 
 //    ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
 
@@ -29,6 +30,8 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     width_test_image_label = ui->label_test_camera_image->width();
     height_test_image_label = ui->label_test_camera_image->height();
 
+    width_train_image_label = ui->label_train_result->width();
+    height_train_image_label = ui->label_train_result->height();
 
     ui->pushButton_grab->setStyleSheet("background-color:rgb(0,200,0)");
     ui->pushButton_train_flag->setStyleSheet("background-color:rgb(0,200,0)");
@@ -44,6 +47,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     connect(ui->pushButton_test,&QPushButton::clicked,this,&MyMainWindow::change_test_flag);
     connect(this,&MyMainWindow::train,this,&MyMainWindow::start_train);
     connect(this,&MyMainWindow::test,this,&MyMainWindow::init_test);
+//    connect(ui->spinBox_defect_threshold, SIGNAL(valueChanged(int)),this,SLOT(change_defect_threshold(int)));
 
     timer->start(frequency);
 //    (stdout);//绑定cout到标准输出
@@ -65,11 +69,11 @@ void MyMainWindow::time_out(){
             ui->label_data_counts->setNum(save_data_nums);
         }
         if(Is_test){
-            Mat defect_image = tester->Test(camera_mat);
-            defect_qt = Mat2QImage(defect_image).scaled(width_defect_label,height_defect_label);
+            vector<Mat> real_defect_rectangle_image = tester->Test(camera_mat);
+            defect_qt = Mat2QImage(real_defect_rectangle_image[1]).scaled(width_defect_label,height_defect_label);
             ui->label_defect_result->setPixmap(QPixmap::fromImage(defect_qt));
 
-            test_camera_qt = Mat2QImage(camera_mat).scaled(width_test_image_label,height_test_image_label);
+            test_camera_qt = Mat2QImage(real_defect_rectangle_image[0]).scaled(width_test_image_label,height_test_image_label);
             ui->label_test_camera_image->setPixmap(QPixmap::fromImage(test_camera_qt));
 
         }
@@ -77,6 +81,9 @@ void MyMainWindow::time_out(){
 
             QByteArray t = qfile.readAll();
             ui->textEdit_train_log->append(QString(t));
+            train_result = Mat2QImage(trainer->combine).scaled(width_train_image_label,height_train_image_label);
+            ui->label_train_result->setPixmap(QPixmap::fromImage(train_result));
+
 //            cout.
 //            cout.flush();
 //            stdcout<<"train"<<endl;
@@ -120,6 +127,13 @@ void MyMainWindow::change_save_flag(){
 
     }
 }
+void MyMainWindow::on_spinBox_defect_threshold_valueChanged(int i){
+    int num = ui->spinBox_defect_threshold->value();
+    tester->defect_threhold = num;
+//    algorithm.set_threshold(num);
+    cout<<"defect threshold: "<<num<<endl;
+};
+
 void MyMainWindow::start_train(){
     trainer->init(save_path_image);
 //    thread t1()

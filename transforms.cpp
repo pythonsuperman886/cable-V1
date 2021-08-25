@@ -427,7 +427,7 @@ void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
 //        cout<<"x: "<<m1<<endl;
         int y = (int)(m2*h);
 
-//        circle(data_out, Point(x,y), 2, c,thickness);
+        circle(data_out, Point(x,y), 6, c,thickness);
 
         if(random_type ==0){
             circle(data_out, Point(x,y), circle_radius, c,thickness);

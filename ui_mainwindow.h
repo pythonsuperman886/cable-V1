@@ -19,6 +19,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
@@ -41,12 +42,15 @@ public:
     QWidget *tab_train;
     QPushButton *pushButton_train_flag;
     QTextEdit *textEdit_train_log;
+    QLabel *label_train_result;
     QWidget *tab_test;
     QPushButton *pushButton_test;
     QLabel *label_model_path;
     QLineEdit *lineEdit_model_path;
     QLabel *label_test_camera_image;
     QLabel *label_defect_result;
+    QLabel *label_defect_threshold;
+    QSpinBox *spinBox_defect_threshold;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -105,17 +109,20 @@ public:
         pushButton_train_flag->setFont(font);
         textEdit_train_log = new QTextEdit(tab_train);
         textEdit_train_log->setObjectName(QStringLiteral("textEdit_train_log"));
-        textEdit_train_log->setGeometry(QRect(50, 160, 991, 661));
+        textEdit_train_log->setGeometry(QRect(50, 160, 611, 661));
+        label_train_result = new QLabel(tab_train);
+        label_train_result->setObjectName(QStringLiteral("label_train_result"));
+        label_train_result->setGeometry(QRect(690, 170, 581, 241));
         tabWidget->addTab(tab_train, QString());
         tab_test = new QWidget();
         tab_test->setObjectName(QStringLiteral("tab_test"));
         pushButton_test = new QPushButton(tab_test);
         pushButton_test->setObjectName(QStringLiteral("pushButton_test"));
-        pushButton_test->setGeometry(QRect(850, 0, 121, 71));
+        pushButton_test->setGeometry(QRect(520, 0, 121, 71));
         pushButton_test->setFont(font);
         label_model_path = new QLabel(tab_test);
         label_model_path->setObjectName(QStringLiteral("label_model_path"));
-        label_model_path->setGeometry(QRect(340, 10, 121, 51));
+        label_model_path->setGeometry(QRect(30, 10, 121, 51));
         QFont font3;
         font3.setPointSize(16);
         font3.setBold(false);
@@ -123,13 +130,31 @@ public:
         label_model_path->setFont(font3);
         lineEdit_model_path = new QLineEdit(tab_test);
         lineEdit_model_path->setObjectName(QStringLiteral("lineEdit_model_path"));
-        lineEdit_model_path->setGeometry(QRect(490, 10, 311, 41));
+        lineEdit_model_path->setGeometry(QRect(170, 10, 311, 41));
         label_test_camera_image = new QLabel(tab_test);
         label_test_camera_image->setObjectName(QStringLiteral("label_test_camera_image"));
         label_test_camera_image->setGeometry(QRect(30, 100, 461, 641));
         label_defect_result = new QLabel(tab_test);
         label_defect_result->setObjectName(QStringLiteral("label_defect_result"));
         label_defect_result->setGeometry(QRect(680, 100, 461, 641));
+        label_defect_threshold = new QLabel(tab_test);
+        label_defect_threshold->setObjectName(QStringLiteral("label_defect_threshold"));
+        label_defect_threshold->setGeometry(QRect(880, 20, 221, 31));
+        QFont font4;
+        font4.setPointSize(15);
+        font4.setBold(true);
+        font4.setWeight(75);
+        label_defect_threshold->setFont(font4);
+        spinBox_defect_threshold = new QSpinBox(tab_test);
+        spinBox_defect_threshold->setObjectName(QStringLiteral("spinBox_defect_threshold"));
+        spinBox_defect_threshold->setGeometry(QRect(1120, 10, 81, 51));
+        QFont font5;
+        font5.setPointSize(15);
+        font5.setBold(true);
+        font5.setUnderline(false);
+        font5.setWeight(75);
+        font5.setStrikeOut(false);
+        spinBox_defect_threshold->setFont(font5);
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -142,7 +167,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -157,11 +182,13 @@ public:
         label_data_counts->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_camera), QApplication::translate("MainWindow", "Camera", Q_NULLPTR));
         pushButton_train_flag->setText(QApplication::translate("MainWindow", "Train", Q_NULLPTR));
+        label_train_result->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_train), QApplication::translate("MainWindow", "Train", Q_NULLPTR));
         pushButton_test->setText(QApplication::translate("MainWindow", "Test", Q_NULLPTR));
         label_model_path->setText(QApplication::translate("MainWindow", "Model Path:", Q_NULLPTR));
         label_test_camera_image->setText(QApplication::translate("MainWindow", "camera image", Q_NULLPTR));
         label_defect_result->setText(QApplication::translate("MainWindow", "defect image", Q_NULLPTR));
+        label_defect_threshold->setText(QApplication::translate("MainWindow", "Defect Threshold:", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "Test", Q_NULLPTR));
     } // retranslateUi
 

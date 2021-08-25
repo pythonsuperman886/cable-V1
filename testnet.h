@@ -11,8 +11,15 @@ public:
     Testnet();
     void init(string model_path_);
     ~Testnet();
-    Mat Test(Mat image);
+    vector<Mat> Test(const Mat& image);
+    vector<Mat> rectangle_cable_defect( Mat& fake_image,Mat &real_image);
+
+    int defect_threhold = 0;
+
 private:
+//    Scalar rectangle_color;
+//    int color;
+    cv::Scalar rectangle_color;
     int test_num=0;
     string model_path;
     bool cuda_available;

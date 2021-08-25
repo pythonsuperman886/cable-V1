@@ -146,7 +146,7 @@ void Trainer::train() {
                     A,B,C
             };
 
-            Mat combine;
+
             hconcat(ouputs,combine);
             imwrite("../checkpoints/train_results/result-" + std::to_string(epoch) + ".png",combine);
 //            result = denorm(result);

@@ -31,9 +31,13 @@ public:
     void start_train();
     void change_test_flag();
     void init_test();
+    void change_defect_threshold(int i);
+
 signals:
     void train();
     void test();
+
+
 private:
     QFile qfile;
     QTextStream *textStream;
@@ -52,6 +56,7 @@ private:
 
     QImage test_camera_qt;
     QImage defect_qt;
+    QImage train_result;
 
     bool Is_save=false;
     bool Is_train=false;
@@ -66,6 +71,11 @@ private:
 
     int width_test_image_label;
     int height_test_image_label;
+
+    int width_train_image_label;
+    int height_train_image_label;
+    public slots:
+    void on_spinBox_defect_threshold_valueChanged(int i);
 };
 
 
