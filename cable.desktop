@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Cable
+Comment=cable_defect_detect
+Exec=/home/explore/project/mycpp/cable-V1/cmake-build-debug/main
+Icon=/home/explore/Downloads/cable.jpg
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=Application;
+

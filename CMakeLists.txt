@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.14 )
 project(cable_V1)
 set(CMAKE_CXX_STANDARD 17)
+
+
+set (app_icon icon.rc)
+#set_property(SOURCE icon.rc APPEND PROPERTY
+#        OBJECT_DEPENDS /home/explore/Downloads/c1.ico)
 #set(OpenCV_DIR /home/explore/envs/opencv/build)
 #set(CMAKE_PREFIX_PATH  /home/explore/envs/opencv_install/share)
 

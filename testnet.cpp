@@ -3,6 +3,8 @@
 //
 
 #include "testnet.h"
+
+#include <utility>
 Testnet::Testnet():
             cuda_available (torch::cuda::is_available() ),
             device(Device(cuda_available ? torch::kCUDA : torch::kCPU)),
@@ -11,7 +13,7 @@ Testnet::Testnet():
 }
 void Testnet::init(string model_path_){
     cout<<"load model..."<<endl;
-    model_path=model_path_;
+    model_path=std::move(model_path_);
     torch::load(G, model_path);
     G->to(device);
     G->eval();
@@ -19,8 +21,15 @@ void Testnet::init(string model_path_){
 vector<Mat> Testnet::rectangle_cable_defect( Mat& fake_image,Mat &real_image) {
 
     cv::Mat   labels,  stats,centroids;
+
+    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
+
     Mat rectangle_image_fake = fake_image.clone();
     Mat rectangle_image_real = real_image.clone();
+
+
+
+
     cvtColor(rectangle_image_real,rectangle_image_real,CV_GRAY2BGR);
     cvtColor(rectangle_image_fake,rectangle_image_fake,CV_GRAY2BGR);
     int nccomps = cv::connectedComponentsWithStats (
@@ -33,13 +42,14 @@ vector<Mat> Testnet::rectangle_cable_defect( Mat& fake_image,Mat &real_image) {
             int label = labels.at<int>(y, x);
             CV_Assert(0 <= label && label <= nccomps);
             if( stats.at<int>(label, cv::CC_STAT_AREA) >defect_threhold && label !=0){
+                Is_save = true;
                 int x_l = stats.at<int>(label, cv::CC_STAT_LEFT);
                 int y_l = stats.at<int>(label, cv::CC_STAT_TOP);
                 int w = stats.at<int>(label, cv::CC_STAT_WIDTH);
                 int h = stats.at<int>(label, cv::CC_STAT_HEIGHT);
                 rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,255));
                 rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,255));
-
+//                cv::imwrite("../checkpoints/test_results/defect"+to_string(test_num)+".jpg",rectangle_image_real);
             }
         }
     vector<Mat> rectangle_images={rectangle_image_real,
@@ -55,11 +65,11 @@ vector<Mat> Testnet::Test(const Mat& image){
 //    TickMeter tm;
 //    cout<<"forward..."<<endl;
 //    torch::AutoGradMode enable_grad(false);
-
+    Is_save = false;
     Mat out;
 //    for(int i =1;i<15;i++){
-//    tm.reset();
-//    tm.start();
+    tm.reset();
+    tm.start();
     Tensor input = Mat2Tensor(resize_image);
     input = input.to(device);
 
@@ -67,8 +77,8 @@ vector<Mat> Testnet::Test(const Mat& image){
     fake_B = G->forward(input);
     out = Tensor2Mat(fake_B);
     vector<Mat> rectangle_mat = rectangle_cable_defect(out,resize_image);
-//    tm.stop();
-//    cout<<"time forward: "<<tm.getTimeMilli()<<endl;
+    tm.stop();
+    cout<<"time forward: "<<tm.getTimeMilli()<<endl;
 //    cout<<" grade "<<fake_B.requires_grad()<<endl;
 
 
@@ -78,11 +88,13 @@ vector<Mat> Testnet::Test(const Mat& image){
 
     Mat combine;
     hconcat(rectangle_mat,combine);
+    if(Is_save)
+        imwrite("../checkpoints/test_results/"+to_string(test_num)+".png",combine.clone());
+
 //    }
 //    fake_B = fake_B.mul(255).add(0.5).clamp(0, 255).permute({0,3,1,2}).to(torch::kU8);
 //    fake_B = fake_B.to(torch::kCPU);
 //    cv::Mat imgbin(cv::Size(image_resize_num, image_resize_num), CV_8U, fake_B.data_ptr());
-    imwrite("../checkpoints/test_results/"+to_string(test_num)+".png",combine.clone());
     test_num++;
     return rectangle_mat;
 

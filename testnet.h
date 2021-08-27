@@ -15,8 +15,10 @@ public:
     vector<Mat> rectangle_cable_defect( Mat& fake_image,Mat &real_image);
 
     int defect_threhold = 0;
+    int threshold_blocksize = 3;
 
 private:
+    bool Is_save=false;
 //    Scalar rectangle_color;
 //    int color;
     cv::Scalar rectangle_color;

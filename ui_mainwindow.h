@@ -51,6 +51,8 @@ public:
     QLabel *label_defect_result;
     QLabel *label_defect_threshold;
     QSpinBox *spinBox_defect_threshold;
+    QLabel *label_block_size;
+    QSpinBox *spinBox_block_size;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -63,7 +65,7 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(-10, 10, 1301, 881));
+        tabWidget->setGeometry(QRect(10, 20, 1301, 881));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new QLabel(tab_camera);
@@ -139,7 +141,7 @@ public:
         label_defect_result->setGeometry(QRect(680, 100, 461, 641));
         label_defect_threshold = new QLabel(tab_test);
         label_defect_threshold->setObjectName(QStringLiteral("label_defect_threshold"));
-        label_defect_threshold->setGeometry(QRect(880, 20, 221, 31));
+        label_defect_threshold->setGeometry(QRect(670, 20, 221, 31));
         QFont font4;
         font4.setPointSize(15);
         font4.setBold(true);
@@ -147,7 +149,7 @@ public:
         label_defect_threshold->setFont(font4);
         spinBox_defect_threshold = new QSpinBox(tab_test);
         spinBox_defect_threshold->setObjectName(QStringLiteral("spinBox_defect_threshold"));
-        spinBox_defect_threshold->setGeometry(QRect(1120, 10, 81, 51));
+        spinBox_defect_threshold->setGeometry(QRect(860, 10, 81, 51));
         QFont font5;
         font5.setPointSize(15);
         font5.setBold(true);
@@ -155,11 +157,19 @@ public:
         font5.setWeight(75);
         font5.setStrikeOut(false);
         spinBox_defect_threshold->setFont(font5);
+        label_block_size = new QLabel(tab_test);
+        label_block_size->setObjectName(QStringLiteral("label_block_size"));
+        label_block_size->setGeometry(QRect(970, 30, 121, 17));
+        label_block_size->setFont(font4);
+        spinBox_block_size = new QSpinBox(tab_test);
+        spinBox_block_size->setObjectName(QStringLiteral("spinBox_block_size"));
+        spinBox_block_size->setGeometry(QRect(1090, 10, 91, 51));
+        spinBox_block_size->setFont(font4);
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1345, 20));
+        menubar->setGeometry(QRect(0, 0, 1345, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -189,6 +199,7 @@ public:
         label_test_camera_image->setText(QApplication::translate("MainWindow", "camera image", Q_NULLPTR));
         label_defect_result->setText(QApplication::translate("MainWindow", "defect image", Q_NULLPTR));
         label_defect_threshold->setText(QApplication::translate("MainWindow", "Defect Threshold:", Q_NULLPTR));
+        label_block_size->setText(QApplication::translate("MainWindow", "Block Size:", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "Test", Q_NULLPTR));
     } // retranslateUi
 

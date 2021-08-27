@@ -48,7 +48,9 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     connect(this,&MyMainWindow::train,this,&MyMainWindow::start_train);
     connect(this,&MyMainWindow::test,this,&MyMainWindow::init_test);
 //    connect(ui->spinBox_defect_threshold, SIGNAL(valueChanged(int)),this,SLOT(change_defect_threshold(int)));
-
+    ui->spinBox_block_size->setValue(3);
+    ui->spinBox_block_size->setSingleStep(2);
+    ui->spinBox_block_size->setRange(3,127);
     timer->start(frequency);
 //    (stdout);//绑定cout到标准输出
 
@@ -159,6 +161,7 @@ void MyMainWindow::change_train_flag(){
 
     }
 }
+
 MyMainWindow::~MyMainWindow(){
 //    delete ui;
     delete trainer;
@@ -179,4 +182,11 @@ void MyMainWindow::change_test_flag() {
         ui->pushButton_test->setStyleSheet("background-color:rgb(0,200,0)");
 
     }
+}
+
+void MyMainWindow::on_spinBox_block_size_valueChanged(int i) {
+    int num = ui->spinBox_block_size->value();
+    tester->threshold_blocksize = num;
+    //    algorithm.set_threshold(num);
+    cout<<"threshold_blocksize: "<<num<<endl;
 }

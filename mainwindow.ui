@@ -17,8 +17,8 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>-10</x>
-      <y>10</y>
+      <x>10</x>
+      <y>20</y>
       <width>1301</width>
       <height>881</height>
      </rect>
@@ -256,7 +256,7 @@
      <widget class="QLabel" name="label_defect_threshold">
       <property name="geometry">
        <rect>
-        <x>880</x>
+        <x>670</x>
         <y>20</y>
         <width>221</width>
         <height>31</height>
@@ -276,7 +276,7 @@
      <widget class="QSpinBox" name="spinBox_defect_threshold">
       <property name="geometry">
        <rect>
-        <x>1120</x>
+        <x>860</x>
         <y>10</y>
         <width>81</width>
         <height>51</height>
@@ -292,6 +292,43 @@
        </font>
       </property>
      </widget>
+     <widget class="QLabel" name="label_block_size">
+      <property name="geometry">
+       <rect>
+        <x>970</x>
+        <y>30</y>
+        <width>121</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Block Size:</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_block_size">
+      <property name="geometry">
+       <rect>
+        <x>1090</x>
+        <y>10</y>
+        <width>91</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -301,7 +338,7 @@
      <x>0</x>
      <y>0</y>
      <width>1345</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

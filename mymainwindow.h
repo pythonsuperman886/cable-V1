@@ -76,6 +76,8 @@ private:
     int height_train_image_label;
     public slots:
     void on_spinBox_defect_threshold_valueChanged(int i);
+    void on_spinBox_block_size_valueChanged(int i);
+
 };
 
 

@@ -5,7 +5,7 @@
 #include "testnet.h"
 int main(int argc,char* argv[]){
     QApplication a(argc, argv);
-    QPixmap pixmap("/home/explore/Downloads/cable.jpeg");//绑定一个图片
+    QPixmap pixmap("/home/explore/Downloads/icon.png");//绑定一个图片
     MySplashScreen splash(pixmap,100);
 
 
