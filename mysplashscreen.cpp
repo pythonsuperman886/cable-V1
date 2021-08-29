@@ -18,7 +18,7 @@ MySplashScreen::MySplashScreen(QPixmap & pixmap,int time):
     progress_bar->setValue(0);
 //    generate_randon_number();
     set_progeress();
-};
+}
 
 void MySplashScreen::set_progeress(){
     double temp_time = elapse_time/10;

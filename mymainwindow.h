@@ -33,6 +33,8 @@ public:
     void change_test_flag();
     void init_test();
     void change_defect_threshold(int i);
+    void set_group_id();
+
 
 signals:
     void train();
@@ -80,6 +82,9 @@ private:
     public slots:
     void on_spinBox_defect_threshold_valueChanged(int i);
     void on_spinBox_block_size_valueChanged(int i);
+    void on_spinBox_blur_num_valueChanged(int i);
+    void on_buttonGroup_blur_toggled(int id,bool type);
+
 
 };
 

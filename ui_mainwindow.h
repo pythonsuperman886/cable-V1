@@ -13,12 +13,14 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -36,9 +38,17 @@ public:
     QLabel *label_camera_image;
     QPushButton *pushButton_grab;
     QLineEdit *lineEdit_data_path;
-    QLabel *label_2;
+    QLabel *label_save_path;
     QTextEdit *textEdit_save_image_lists;
     QLabel *label_data_counts;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout;
+    QRadioButton *radioButton_blur;
+    QRadioButton *radioButton_gaussianBlur;
+    QRadioButton *radioButton_bilateraFilter;
+    QRadioButton *radioButton_medianBlur;
+    QRadioButton *radioButton_blur_none;
+    QSpinBox *spinBox_blur_num;
     QWidget *tab_train;
     QPushButton *pushButton_train_flag;
     QTextEdit *textEdit_train_log;
@@ -55,6 +65,7 @@ public:
     QSpinBox *spinBox_block_size;
     QMenuBar *menubar;
     QStatusBar *statusbar;
+    QButtonGroup *buttonGroup_blur;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -82,18 +93,18 @@ public:
         lineEdit_data_path = new QLineEdit(tab_camera);
         lineEdit_data_path->setObjectName(QStringLiteral("lineEdit_data_path"));
         lineEdit_data_path->setGeometry(QRect(600, 80, 331, 81));
-        label_2 = new QLabel(tab_camera);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(480, 106, 111, 41));
+        label_save_path = new QLabel(tab_camera);
+        label_save_path->setObjectName(QStringLiteral("label_save_path"));
+        label_save_path->setGeometry(QRect(480, 106, 111, 41));
         QFont font1;
         font1.setFamily(QStringLiteral("Ubuntu"));
         font1.setPointSize(15);
         font1.setBold(true);
         font1.setWeight(75);
-        label_2->setFont(font1);
+        label_save_path->setFont(font1);
         textEdit_save_image_lists = new QTextEdit(tab_camera);
         textEdit_save_image_lists->setObjectName(QStringLiteral("textEdit_save_image_lists"));
-        textEdit_save_image_lists->setGeometry(QRect(490, 200, 641, 491));
+        textEdit_save_image_lists->setGeometry(QRect(490, 200, 631, 471));
         label_data_counts = new QLabel(tab_camera);
         label_data_counts->setObjectName(QStringLiteral("label_data_counts"));
         label_data_counts->setGeometry(QRect(1140, 210, 81, 51));
@@ -102,6 +113,65 @@ public:
         font2.setBold(true);
         font2.setWeight(75);
         label_data_counts->setFont(font2);
+        gridLayoutWidget = new QWidget(tab_camera);
+        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(20, 690, 340, 112));
+        gridLayout = new QGridLayout(gridLayoutWidget);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        radioButton_blur = new QRadioButton(gridLayoutWidget);
+        buttonGroup_blur = new QButtonGroup(MainWindow);
+        buttonGroup_blur->setObjectName(QStringLiteral("buttonGroup_blur"));
+        buttonGroup_blur->addButton(radioButton_blur);
+        radioButton_blur->setObjectName(QStringLiteral("radioButton_blur"));
+        QFont font3;
+        font3.setBold(true);
+        font3.setWeight(75);
+        radioButton_blur->setFont(font3);
+        radioButton_blur->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+        gridLayout->addWidget(radioButton_blur, 0, 0, 1, 1);
+
+        radioButton_gaussianBlur = new QRadioButton(gridLayoutWidget);
+        buttonGroup_blur->addButton(radioButton_gaussianBlur);
+        radioButton_gaussianBlur->setObjectName(QStringLiteral("radioButton_gaussianBlur"));
+        radioButton_gaussianBlur->setFont(font3);
+
+        gridLayout->addWidget(radioButton_gaussianBlur, 0, 1, 1, 1);
+
+        radioButton_bilateraFilter = new QRadioButton(gridLayoutWidget);
+        buttonGroup_blur->addButton(radioButton_bilateraFilter);
+        radioButton_bilateraFilter->setObjectName(QStringLiteral("radioButton_bilateraFilter"));
+        radioButton_bilateraFilter->setFont(font3);
+        radioButton_bilateraFilter->setChecked(true);
+
+        gridLayout->addWidget(radioButton_bilateraFilter, 2, 0, 1, 1);
+
+        radioButton_medianBlur = new QRadioButton(gridLayoutWidget);
+        buttonGroup_blur->addButton(radioButton_medianBlur);
+        radioButton_medianBlur->setObjectName(QStringLiteral("radioButton_medianBlur"));
+        radioButton_medianBlur->setFont(font3);
+        radioButton_medianBlur->setContextMenuPolicy(Qt::NoContextMenu);
+
+        gridLayout->addWidget(radioButton_medianBlur, 2, 1, 1, 1);
+
+        radioButton_blur_none = new QRadioButton(gridLayoutWidget);
+        buttonGroup_blur->addButton(radioButton_blur_none);
+        radioButton_blur_none->setObjectName(QStringLiteral("radioButton_blur_none"));
+        radioButton_blur_none->setFont(font3);
+
+        gridLayout->addWidget(radioButton_blur_none, 3, 0, 1, 1);
+
+        spinBox_blur_num = new QSpinBox(gridLayoutWidget);
+        spinBox_blur_num->setObjectName(QStringLiteral("spinBox_blur_num"));
+        QFont font4;
+        font4.setPointSize(15);
+        font4.setBold(true);
+        font4.setWeight(75);
+        spinBox_blur_num->setFont(font4);
+
+        gridLayout->addWidget(spinBox_blur_num, 3, 1, 1, 1);
+
         tabWidget->addTab(tab_camera, QString());
         tab_train = new QWidget();
         tab_train->setObjectName(QStringLiteral("tab_train"));
@@ -125,11 +195,11 @@ public:
         label_model_path = new QLabel(tab_test);
         label_model_path->setObjectName(QStringLiteral("label_model_path"));
         label_model_path->setGeometry(QRect(30, 10, 121, 51));
-        QFont font3;
-        font3.setPointSize(16);
-        font3.setBold(false);
-        font3.setWeight(50);
-        label_model_path->setFont(font3);
+        QFont font5;
+        font5.setPointSize(16);
+        font5.setBold(false);
+        font5.setWeight(50);
+        label_model_path->setFont(font5);
         lineEdit_model_path = new QLineEdit(tab_test);
         lineEdit_model_path->setObjectName(QStringLiteral("lineEdit_model_path"));
         lineEdit_model_path->setGeometry(QRect(170, 10, 311, 41));
@@ -142,21 +212,17 @@ public:
         label_defect_threshold = new QLabel(tab_test);
         label_defect_threshold->setObjectName(QStringLiteral("label_defect_threshold"));
         label_defect_threshold->setGeometry(QRect(670, 20, 221, 31));
-        QFont font4;
-        font4.setPointSize(15);
-        font4.setBold(true);
-        font4.setWeight(75);
         label_defect_threshold->setFont(font4);
         spinBox_defect_threshold = new QSpinBox(tab_test);
         spinBox_defect_threshold->setObjectName(QStringLiteral("spinBox_defect_threshold"));
         spinBox_defect_threshold->setGeometry(QRect(860, 10, 81, 51));
-        QFont font5;
-        font5.setPointSize(15);
-        font5.setBold(true);
-        font5.setUnderline(false);
-        font5.setWeight(75);
-        font5.setStrikeOut(false);
-        spinBox_defect_threshold->setFont(font5);
+        QFont font6;
+        font6.setPointSize(15);
+        font6.setBold(true);
+        font6.setUnderline(false);
+        font6.setWeight(75);
+        font6.setStrikeOut(false);
+        spinBox_defect_threshold->setFont(font6);
         label_block_size = new QLabel(tab_test);
         label_block_size->setObjectName(QStringLiteral("label_block_size"));
         label_block_size->setGeometry(QRect(970, 30, 121, 17));
@@ -169,7 +235,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1345, 22));
+        menubar->setGeometry(QRect(0, 0, 1345, 20));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -177,7 +243,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -188,8 +254,13 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
         label_camera_image->setText(QApplication::translate("MainWindow", "Camera Image", Q_NULLPTR));
         pushButton_grab->setText(QApplication::translate("MainWindow", "Grab", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWindow", "Save Path :", Q_NULLPTR));
+        label_save_path->setText(QApplication::translate("MainWindow", "Save Path :", Q_NULLPTR));
         label_data_counts->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        radioButton_blur->setText(QApplication::translate("MainWindow", "blur", Q_NULLPTR));
+        radioButton_gaussianBlur->setText(QApplication::translate("MainWindow", "GaussianBlur", Q_NULLPTR));
+        radioButton_bilateraFilter->setText(QApplication::translate("MainWindow", "bilateralFilter", Q_NULLPTR));
+        radioButton_medianBlur->setText(QApplication::translate("MainWindow", "medianBlur", Q_NULLPTR));
+        radioButton_blur_none->setText(QApplication::translate("MainWindow", "none", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_camera), QApplication::translate("MainWindow", "Camera", Q_NULLPTR));
         pushButton_train_flag->setText(QApplication::translate("MainWindow", "Train", Q_NULLPTR));
         label_train_result->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));

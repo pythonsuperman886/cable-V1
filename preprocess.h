@@ -13,12 +13,10 @@ public:
     //    explicit Preprocess(QObject *parent = nullptr);
     ~Preprocess();
     void reset_parameters();
-    void get_camera_mat(Mat camera_mat);
-    Mat series_process();
+    Mat series_process(Mat input_image);
 
     void Preprocess2Save(Mat image,string path);
 
-    Mat thinimage(Mat image);
     void set_binary_parameters(int threshold_vaule,ThresholdTypes type=THRESH_BINARY);
     void set_dilate_parameters(int kernel_size,MorphShapes shape = MORPH_RECT);
     void set_blur_parameters(int kernel_size);
@@ -32,16 +30,11 @@ public:
     Mat get_dilate_mat();
     Mat get_blur_mat();
     Mat get_gray_mat();
-    public slots:
-
-
-    void OnReadData();
 
 
 
 
 private:
-    Mat camera_mat;
     Mat blur_mat;
     Mat resize_mat;
     Mat binary_mat;
