@@ -48,7 +48,8 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     connect(this,&MyMainWindow::train,this,&MyMainWindow::start_train);
     connect(this,&MyMainWindow::test,this,&MyMainWindow::init_test);
 //    connect(ui->spinBox_defect_threshold, SIGNAL(valueChanged(int)),this,SLOT(change_defect_threshold(int)));
-    ui->spinBox_block_size->setValue(3);
+    ui->spinBox_defect_threshold->setValue(30);
+    ui->spinBox_block_size->setValue(31);
     ui->spinBox_block_size->setSingleStep(2);
     ui->spinBox_block_size->setRange(3,127);
     timer->start(frequency);
@@ -108,13 +109,13 @@ void MyMainWindow::set_save_path(){
 };
 
 void MyMainWindow::set_model_path(){
-    model_path= ui->lineEdit_model_path->text().toStdString();
+    tester->model_path= ui->lineEdit_model_path->text().toStdString();
 
 //    save_data_nums=0;
-    cout<<model_path<<endl;
+    cout<<tester->model_path<<endl;
 };
 void MyMainWindow::init_test(){
-    tester->init(model_path);
+    tester->init();
 };
 
 void MyMainWindow::change_save_flag(){

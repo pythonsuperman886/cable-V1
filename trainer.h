@@ -28,7 +28,7 @@ private:
     const std::string sample_output_dir_path = "../output/";
     string input_dir;
 
-    const size_t num_epochs = 200;
+    const size_t num_epochs = 2000;
     const double learning_rate = 0.0002;
     int image_resize_num = 128;
     const int64_t batch_size = 1;

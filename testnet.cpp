@@ -11,9 +11,9 @@ Testnet::Testnet():
             G(UNet_Generator(1,1)),rectangle_color(255){
 
 }
-void Testnet::init(string model_path_){
+void Testnet::init(){
     cout<<"load model..."<<endl;
-    model_path=std::move(model_path_);
+//    model_path=std::move(model_path_);
     torch::load(G, model_path);
     G->to(device);
     G->eval();
@@ -47,8 +47,8 @@ vector<Mat> Testnet::rectangle_cable_defect( Mat& fake_image,Mat &real_image) {
                 int y_l = stats.at<int>(label, cv::CC_STAT_TOP);
                 int w = stats.at<int>(label, cv::CC_STAT_WIDTH);
                 int h = stats.at<int>(label, cv::CC_STAT_HEIGHT);
-                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,255));
-                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,255));
+                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,200));
+                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,200));
 //                cv::imwrite("../checkpoints/test_results/defect"+to_string(test_num)+".jpg",rectangle_image_real);
             }
         }

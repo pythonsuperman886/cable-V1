@@ -9,13 +9,14 @@
 class Testnet {
 public:
     Testnet();
-    void init(string model_path_);
+    void init();
     ~Testnet();
     vector<Mat> Test(const Mat& image);
     vector<Mat> rectangle_cable_defect( Mat& fake_image,Mat &real_image);
 
-    int defect_threhold = 0;
-    int threshold_blocksize = 3;
+    int defect_threhold = 30;
+    int threshold_blocksize = 31;
+    string model_path = "../checkpoints/model/epoch_latest_gen.pth";
 
 private:
     bool Is_save=false;
@@ -23,7 +24,6 @@ private:
 //    int color;
     cv::Scalar rectangle_color;
     int test_num=0;
-    string model_path;
     bool cuda_available;
     torch::Device device;
     UNet_Generator G;

@@ -419,15 +419,15 @@ void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
 //        cout<<"color: "<<random_color<<endl;
 
 
-        int size = size_ratio*( h>w?w:h)*0.5;
+        double size = size_ratio*( h>w?w:h)*0.1;
         int x = (int)(m1*w);
         int line_thickness = (int)(rand()%4)+1;
-        int circle_radius = (int)(rand()%2)+1;
+        int circle_radius = (int)(rand()%10)+1;
 
 //        cout<<"x: "<<m1<<endl;
         int y = (int)(m2*h);
 
-        circle(data_out, Point(x,y), 6, c,thickness);
+//        circle(data_out, Point(x,y), 6, c,thickness);
 
         if(random_type ==0){
             circle(data_out, Point(x,y), circle_radius, c,thickness);
@@ -436,7 +436,7 @@ void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
 //            ellipse(data_out,Point(x, y),Size(size, size),30,0,360,c,thickness);
 
         }else if(random_type == 2){
-            rectangle(data_out,Rect(x,y,x+size*0.5,y+size*0.2), c, thickness);
+//            rectangle(data_out,Rect(x,y,x+size*0.25,y+size*0.13), c, thickness);
 
         }else if(random_type == 3){
             line(data_out, Point(x, y), Point(x+size, y+size), c, line_thickness);

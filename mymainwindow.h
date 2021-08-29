@@ -14,6 +14,7 @@
 #include <thread>
 #include <QTextStream>
 #include <QFile>
+#include "preprocess.h"
 namespace Ui {
     class MainWindow;
 }
@@ -49,6 +50,8 @@ private:
     Trainer *trainer;
     Testnet * tester;
 
+    Preprocess preprocess;
+    Mat preprocess_mat;
 
     int frame_num = 0;
     Mat camera_mat;
