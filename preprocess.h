@@ -24,6 +24,7 @@ public:
 
     Mat blur_image(Mat input,int size,int type);
     Mat binary_image(Mat input,int threshold,int type);
+    Mat rect_image(Mat input,const Rect& rect);
 
     Mat get_binary_mat();
     Mat get_thin_mat();
@@ -35,6 +36,7 @@ public:
 
 
 private:
+    Mat re_rect;
     Mat blur_mat;
     Mat resize_mat;
     Mat binary_mat;

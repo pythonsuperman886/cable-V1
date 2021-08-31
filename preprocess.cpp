@@ -28,6 +28,19 @@ Mat Preprocess ::series_process(Mat input_image){
 
     return blur_mat;
 }
+Mat Preprocess ::rect_image(Mat input,const Rect& rect){
+    int new_width;
+    if(rect.width+rect.x>input.cols){
+        int yu = rect.width+rect.x -input.cols;
+        new_width = rect.width-yu;
+    }else{
+        new_width =  rect.width;
+    }
+    Rect new_rect(rect.x,0,new_width,rect.height);
+
+    Mat roiImg = input(new_rect);
+    return roiImg;
+};
 
 void Preprocess::set_binary_parameters(int value,ThresholdTypes type) {
     threshold_value = value;

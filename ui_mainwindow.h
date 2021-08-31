@@ -26,6 +26,7 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
+#include "mylabel.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -35,7 +36,7 @@ public:
     QWidget *centralwidget;
     QTabWidget *tabWidget;
     QWidget *tab_camera;
-    QLabel *label_camera_image;
+    MyLabel *label_camera_image;
     QPushButton *pushButton_grab;
     QLineEdit *lineEdit_data_path;
     QLabel *label_save_path;
@@ -71,20 +72,20 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1345, 951);
+        MainWindow->resize(1545, 980);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(10, 20, 1301, 881));
+        tabWidget->setGeometry(QRect(20, 20, 1541, 941));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
-        label_camera_image = new QLabel(tab_camera);
+        label_camera_image = new MyLabel(tab_camera);
         label_camera_image->setObjectName(QStringLiteral("label_camera_image"));
-        label_camera_image->setGeometry(QRect(30, 40, 421, 631));
+        label_camera_image->setGeometry(QRect(40, 220, 640, 480));
         pushButton_grab = new QPushButton(tab_camera);
         pushButton_grab->setObjectName(QStringLiteral("pushButton_grab"));
-        pushButton_grab->setGeometry(QRect(950, 80, 161, 81));
+        pushButton_grab->setGeometry(QRect(1200, 100, 161, 81));
         QFont font;
         font.setPointSize(20);
         font.setBold(true);
@@ -92,10 +93,10 @@ public:
         pushButton_grab->setFont(font);
         lineEdit_data_path = new QLineEdit(tab_camera);
         lineEdit_data_path->setObjectName(QStringLiteral("lineEdit_data_path"));
-        lineEdit_data_path->setGeometry(QRect(600, 80, 331, 81));
+        lineEdit_data_path->setGeometry(QRect(850, 100, 331, 81));
         label_save_path = new QLabel(tab_camera);
         label_save_path->setObjectName(QStringLiteral("label_save_path"));
-        label_save_path->setGeometry(QRect(480, 106, 111, 41));
+        label_save_path->setGeometry(QRect(720, 110, 111, 41));
         QFont font1;
         font1.setFamily(QStringLiteral("Ubuntu"));
         font1.setPointSize(15);
@@ -104,10 +105,10 @@ public:
         label_save_path->setFont(font1);
         textEdit_save_image_lists = new QTextEdit(tab_camera);
         textEdit_save_image_lists->setObjectName(QStringLiteral("textEdit_save_image_lists"));
-        textEdit_save_image_lists->setGeometry(QRect(490, 200, 631, 471));
+        textEdit_save_image_lists->setGeometry(QRect(730, 210, 631, 471));
         label_data_counts = new QLabel(tab_camera);
         label_data_counts->setObjectName(QStringLiteral("label_data_counts"));
-        label_data_counts->setGeometry(QRect(1140, 210, 81, 51));
+        label_data_counts->setGeometry(QRect(1370, 210, 81, 51));
         QFont font2;
         font2.setPointSize(24);
         font2.setBold(true);
@@ -115,7 +116,7 @@ public:
         label_data_counts->setFont(font2);
         gridLayoutWidget = new QWidget(tab_camera);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(20, 690, 340, 112));
+        gridLayoutWidget->setGeometry(QRect(20, 760, 340, 112));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -235,7 +236,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1345, 20));
+        menubar->setGeometry(QRect(0, 0, 1545, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));

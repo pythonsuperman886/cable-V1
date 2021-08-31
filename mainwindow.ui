@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1345</width>
-    <height>951</height>
+    <width>1545</width>
+    <height>980</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>20</y>
-      <width>1301</width>
-      <height>881</height>
+      <width>1541</width>
+      <height>941</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -30,13 +30,13 @@
      <attribute name="title">
       <string>Camera</string>
      </attribute>
-     <widget class="QLabel" name="label_camera_image">
+     <widget class="MyLabel" name="label_camera_image">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>40</y>
-        <width>421</width>
-        <height>631</height>
+        <x>40</x>
+        <y>220</y>
+        <width>640</width>
+        <height>480</height>
        </rect>
       </property>
       <property name="text">
@@ -46,8 +46,8 @@
      <widget class="QPushButton" name="pushButton_grab">
       <property name="geometry">
        <rect>
-        <x>950</x>
-        <y>80</y>
+        <x>1200</x>
+        <y>100</y>
         <width>161</width>
         <height>81</height>
        </rect>
@@ -66,8 +66,8 @@
      <widget class="QLineEdit" name="lineEdit_data_path">
       <property name="geometry">
        <rect>
-        <x>600</x>
-        <y>80</y>
+        <x>850</x>
+        <y>100</y>
         <width>331</width>
         <height>81</height>
        </rect>
@@ -76,8 +76,8 @@
      <widget class="QLabel" name="label_save_path">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>106</y>
+        <x>720</x>
+        <y>110</y>
         <width>111</width>
         <height>41</height>
        </rect>
@@ -97,8 +97,8 @@
      <widget class="QTextEdit" name="textEdit_save_image_lists">
       <property name="geometry">
        <rect>
-        <x>490</x>
-        <y>200</y>
+        <x>730</x>
+        <y>210</y>
         <width>631</width>
         <height>471</height>
        </rect>
@@ -107,7 +107,7 @@
      <widget class="QLabel" name="label_data_counts">
       <property name="geometry">
        <rect>
-        <x>1140</x>
+        <x>1370</x>
         <y>210</y>
         <width>81</width>
         <height>51</height>
@@ -128,7 +128,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>690</y>
+        <y>760</y>
         <width>340</width>
         <height>112</height>
        </rect>
@@ -449,13 +449,20 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1345</width>
-     <height>20</height>
+     <width>1545</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyLabel</class>
+   <extends>QLabel</extends>
+   <header>mylabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
  <buttongroups>

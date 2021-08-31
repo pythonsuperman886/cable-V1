@@ -82,16 +82,26 @@ void MyMainWindow::time_out(){
 
         camera_qt = Mat2QImage(camera_mat).scaled(width_camera_label,height_camera_label);
         ui->label_camera_image->setPixmap(QPixmap::fromImage(camera_qt));
+        re_rect_mat = camera_mat.clone();
+        if(ui->label_camera_image->Is_finish){
+
+            Rect rect = get_rect(camera_mat.rows);
+
+            re_rect_mat = preprocess.rect_image(camera_mat,rect);
+
+        }
+
+
 
         if(Is_save){
             string path = save_path_image+"/"+to_string(frame_num)+".png";
-            imwrite(path,camera_mat);
+            imwrite(path,re_rect_mat);
             ui->textEdit_save_image_lists->append(QString::fromStdString(path));
             save_data_nums++;
             ui->label_data_counts->setNum(save_data_nums);
         }
         if(Is_test){
-            vector<Mat> real_defect_rectangle_image = tester->Test(camera_mat);
+            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
             defect_qt = Mat2QImage(real_defect_rectangle_image[1]).scaled(width_defect_label,height_defect_label);
             ui->label_defect_result->setPixmap(QPixmap::fromImage(defect_qt));
 
@@ -126,6 +136,18 @@ void MyMainWindow::set_save_path(){
     save_data_nums=0;
     cout<<save_path_image<<endl;
 };
+Rect MyMainWindow::get_rect(int h){
+    QPoint p1 = ui->label_camera_image->getStartPoint();
+    QPoint p2 = ui->label_camera_image->getEndPoint();
+    int x1 = p1.x();
+    int x2 = p2.x();
+
+    Rect rect(x1,0,x2-x1,h);
+    cout<<"x1: "<<x1<<endl;
+    cout<<"x2: "<<x2<<endl;
+
+    return rect;
+}
 
 void MyMainWindow::set_model_path(){
     tester->model_path= ui->lineEdit_model_path->text().toStdString();
