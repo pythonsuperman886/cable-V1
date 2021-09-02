@@ -206,10 +206,10 @@ public:
         lineEdit_model_path->setGeometry(QRect(170, 10, 311, 41));
         label_test_camera_image = new QLabel(tab_test);
         label_test_camera_image->setObjectName(QStringLiteral("label_test_camera_image"));
-        label_test_camera_image->setGeometry(QRect(30, 100, 461, 641));
+        label_test_camera_image->setGeometry(QRect(30, 100, 640, 480));
         label_defect_result = new QLabel(tab_test);
         label_defect_result->setObjectName(QStringLiteral("label_defect_result"));
-        label_defect_result->setGeometry(QRect(680, 100, 461, 641));
+        label_defect_result->setGeometry(QRect(720, 110, 640, 480));
         label_defect_threshold = new QLabel(tab_test);
         label_defect_threshold->setObjectName(QStringLiteral("label_defect_threshold"));
         label_defect_threshold->setGeometry(QRect(670, 20, 221, 31));
@@ -244,7 +244,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

@@ -12,11 +12,19 @@ public:
     void init();
     ~Testnet();
     vector<Mat> Test(const Mat& image);
+    Mat Test(const Mat& image,vector<Rect> &lists);
+    Mat rectangle_cable_defect(Mat fake_image,vector<Rect> lists);
+
     vector<Mat> rectangle_cable_defect( Mat& fake_image,Mat &real_image);
+    vector<Rect> get_defect_rect_list( Mat fake_image,Mat &resize_to_origin_image_net_out);
 
     int defect_threhold = 30;
     int threshold_blocksize = 31;
     string model_path = "../checkpoints/model/epoch_latest_gen.pth";
+    int copy_border_left=0;
+    int copy_border_right=0;
+    int rect_image_width=640;
+    int rect_image_height=480;
 
 private:
     bool Is_save=false;

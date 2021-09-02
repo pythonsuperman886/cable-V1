@@ -73,22 +73,24 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 //    (stdout);//绑定cout到标准输出
 
 }
+
 void MyMainWindow::time_out(){
     camera_mat = camera.readFrame();
 
 //    cout<<"get frame"<<endl;
     if(!camera_mat.empty()){
-        camera_mat = preprocess.series_process(camera_mat);
+        preprocess_mat = preprocess.series_process(camera_mat);
 
-        camera_qt = Mat2QImage(camera_mat).scaled(width_camera_label,height_camera_label);
-        ui->label_camera_image->setPixmap(QPixmap::fromImage(camera_qt));
-        re_rect_mat = camera_mat.clone();
+        preprocess_qt = Mat2QImage(preprocess_mat).scaled(width_camera_label,height_camera_label);
+        ui->label_camera_image->setPixmap(QPixmap::fromImage(preprocess_qt));
+        re_rect_mat = preprocess_mat.clone();
         if(ui->label_camera_image->Is_finish){
 
-            Rect rect = get_rect(camera_mat.rows);
+            Rect rect = get_rect(preprocess_mat.cols,preprocess_mat.rows);
 
-            re_rect_mat = preprocess.rect_image(camera_mat,rect);
-
+            re_rect_mat = preprocess.rect_image(preprocess_mat,rect);
+            tester->rect_image_width = re_rect_mat.cols;
+            tester->rect_image_height = re_rect_mat.rows;
         }
 
 
@@ -101,11 +103,24 @@ void MyMainWindow::time_out(){
             ui->label_data_counts->setNum(save_data_nums);
         }
         if(Is_test){
-            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
-            defect_qt = Mat2QImage(real_defect_rectangle_image[1]).scaled(width_defect_label,height_defect_label);
+            vector<Rect> rect_lists;
+            Mat net_out = tester->Test(re_rect_mat,rect_lists);
+            Mat camera_mat_test = camera_mat.clone();
+            camera_mat_test = tester->rectangle_cable_defect(camera_mat_test,rect_lists);
+            net_out = tester->rectangle_cable_defect(net_out,rect_lists);
+
+            vector<int> diameter_nums = get_diameter_nums(camera_mat);
+            draw_line_diameter(camera_mat_test,diameter_nums);
+
+//            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
+
+
+
+
+            defect_qt = Mat2QImage(net_out).scaled(width_defect_label,height_defect_label);
             ui->label_defect_result->setPixmap(QPixmap::fromImage(defect_qt));
 
-            test_camera_qt = Mat2QImage(real_defect_rectangle_image[0]).scaled(width_test_image_label,height_test_image_label);
+            test_camera_qt = Mat2QImage(camera_mat_test).scaled(width_test_image_label,height_test_image_label);
             ui->label_test_camera_image->setPixmap(QPixmap::fromImage(test_camera_qt));
 
         }
@@ -136,11 +151,15 @@ void MyMainWindow::set_save_path(){
     save_data_nums=0;
     cout<<save_path_image<<endl;
 };
-Rect MyMainWindow::get_rect(int h){
+Rect MyMainWindow::get_rect(int w,int h){
     QPoint p1 = ui->label_camera_image->getStartPoint();
     QPoint p2 = ui->label_camera_image->getEndPoint();
     int x1 = p1.x();
     int x2 = p2.x();
+
+    tester->copy_border_left = x1;
+    tester->copy_border_right = w - x2;
+
 
     Rect rect(x1,0,x2-x1,h);
     cout<<"x1: "<<x1<<endl;

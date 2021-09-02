@@ -34,7 +34,7 @@ public:
     void init_test();
     void change_defect_threshold(int i);
     void set_group_id();
-    Rect get_rect(int h);
+    Rect get_rect(int w,int h);
 
 signals:
     void train();
@@ -54,6 +54,7 @@ private:
 
     Preprocess preprocess;
     Mat preprocess_mat;
+    QImage preprocess_qt;
 
     int frame_num = 0;
     Mat camera_mat;

@@ -39,6 +39,9 @@ QImage Mat2QImage( const cv::Mat& InputMat);
 Tensor Mat2Tensor(Mat camera_frame);
 Tensor denorm(const torch::Tensor& tensor);
 Mat Tensor2Mat(const Tensor& tensor);
-
+vector<int> min_edge_out(const Mat& image);
+vector<int> Max_deal_pic(const Mat& image);
+vector<int> get_diameter_nums(const Mat& image);
+void draw_line_diameter(Mat &image, vector<int> nums);
 
 #endif //CABLE_V1_COMMON_H
