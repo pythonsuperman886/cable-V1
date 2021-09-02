@@ -64,7 +64,8 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
     Mat border_image_to_origin;
     Mat resize_image_to_rect;
 
-    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
+//    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
+    cv::threshold(fake_image, fake_image, 25, 255, CV_THRESH_BINARY);
 
     resize(fake_image,resize_image_to_rect,Size(rect_image_width,rect_image_height));
 
@@ -108,16 +109,22 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
         //        cv::imwrite("fake"+to_string(i)+".jpg",imgbin);
 }
 
-Mat Testnet::rectangle_cable_defect(Mat fake_image,vector<Rect> lists) {
+Mat Testnet::rectangle_cable_defect(Mat fake_image,const vector<Rect>& lists) {
 
     if(fake_image.channels()==1){
         cvtColor(fake_image,fake_image,CV_GRAY2BGR);
 
     }
+    tm.reset();
+    tm.start();
 
-    for(auto Rect:lists){
-        rectangle(fake_image,Rect, cv::Scalar(0,0,200));
+    for(const auto& Rect:lists){
+        rectangle(fake_image,Rect, cv::Scalar(0,0,200),3);
     }
+    tm.stop();
+    cout<<"list size: "<<lists.size()<<endl;
+    cout<<"rectangle forward: "<<tm.getTimeMilli()<<endl;
+
     return fake_image;
 
 }
@@ -142,7 +149,7 @@ Mat Testnet::Test(const Mat& image,vector<Rect> &lists){
     out = Tensor2Mat(fake_B);
     Mat out2origin_size;
     lists = get_defect_rect_list(out,out2origin_size);
-
+    cout<<"lists size: "<<lists.size()<<endl;
 
 //    vector<Mat> rectangle_mat = rectangle_cable_defect(out,resize_image);
     tm.stop();

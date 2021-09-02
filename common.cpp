@@ -92,29 +92,42 @@ vector<int> Max_deal_pic(const Mat& image)
     findContours(morphology_result,contours,hierarchy,
                  RETR_TREE,CHAIN_APPROX_SIMPLE,Point());
     vector<int> my_x;
+//    cout<<"max deal"<<endl;
     for (int i = 0; i < contours.size(); i++)
     {
         for(int j = 0 ;j<contours[i].size();j++)
         {
             int x = contours[i][j].x;
             my_x.push_back(x);
+//            cout<<"x : "<<x<<endl;
         }
     }
+//    cout<<" max deal end"<<endl;
     // 利用最值画出对应的竖线
-    vector<int>::iterator p = min_element(my_x.begin(), my_x.end());
-    int min_c = *p;
-    vector<int>::iterator q = max_element(my_x.begin(), my_x.end());
-    int max_c = *q;
-    //    cv::rectangle(image, Point (min_c, 20), Point (max_c, 20), cv::Scalar(0, 0, 255), 2, 8, 0);
-    //    cv::rectangle(image, Point (min_c, 0), Point (min_c, image.rows),
-    //                  cv::Scalar(0, 0, 200), 2, 8, 0);
-    //    cv::rectangle(image, Point (max_c, 0), Point (max_c, image.rows),
-    //                  cv::Scalar(0, 0, 200), 2, 8, 0);
-    // 将处理好的图片返回
-    //    return image;
-    // 将最大直径的两个横坐标返回
-    vector<int> x_max = {min_c, max_c};
-    return x_max;
+    if(!my_x.empty()){
+        vector<int>::iterator p = min_element(my_x.begin(), my_x.end());
+        int min_c = *p;
+        vector<int>::iterator q = max_element(my_x.begin(), my_x.end());
+        int max_c = *q;
+//        cout<<"x_max: "<<min_c<<"  "<<max_c<<endl;
+        //    cv::rectangle(image, Point (min_c, 20), Point (max_c, 20), cv::Scalar(0, 0, 255), 2, 8, 0);
+        //    cv::rectangle(image, Point (min_c, 0), Point (min_c, image.rows),
+        //                  cv::Scalar(0, 0, 200), 2, 8, 0);
+        //    cv::rectangle(image, Point (max_c, 0), Point (max_c, image.rows),
+        //                  cv::Scalar(0, 0, 200), 2, 8, 0);
+        // 将处理好的图片返回
+        //    return image;
+        // 将最大直径的两个横坐标返回
+        vector<int> x_max = {min_c, max_c};
+        return x_max;
+
+    }else{
+        vector<int> x_max={-1,-1};
+//        cout<<"x_max: "<<x_max[0]<<"  "<<x_max[1]<<endl;
+
+        return x_max;
+    }
+
 
 }
 
@@ -157,25 +170,40 @@ vector<int> min_edge_out(const Mat& image)
             my_x.push_back(x);
         }
     }
-    double sum = std::accumulate(begin(my_x),end(my_x),0.0);
-    double mean = sum/my_x.size();
-    int count = 0;
-    for(auto & value:my_x){
-        if(value<mean){
-            count++;
+
+    if(!my_x.empty()){
+        double sum = std::accumulate(begin(my_x),end(my_x),0.0);
+        double mean = sum/my_x.size();
+        int count = 0;
+        for(auto & value:my_x){
+            if(value<mean){
+                count++;
+            }
         }
-    }
+//        cout<<"count: "<<count<<endl;
 
-    vector<int>::iterator p = max_element(my_x.begin(), my_x.begin()+count);
+        vector<int>::iterator p = max_element(my_x.begin(), my_x.begin()+count);
 
-    int max_per_c = *p;
-    int min_rear_c;
-    if(count == my_x.size()){
-        min_rear_c = 255;
+        int max_per_c = *p;
+        int min_rear_c;
+        if(count == my_x.size()){
+            min_rear_c = 255;
+        }else{
+            vector<int>::iterator q = min_element( my_x.begin()+count,my_x.end());
+            min_rear_c = *q;
+        }
+
+        vector<int> x_min = {max_per_c, min_rear_c};
+//        cout<<"x_min: "<<max_per_c<<"  "<<min_rear_c<<endl;
+
+        return x_min;
     }else{
-        vector<int>::iterator q = min_element( my_x.begin()+count,my_x.end());
-        min_rear_c = *q;
+        vector<int> x_min = {-1, -1};
+//        cout<<"x_min: "<<x_min[0]<<"  "<<x_min[1]<<endl;
+
+        return x_min;
     }
+
     //    cout<<"max: "<<max_per_c<<endl;
     //    cout<<"min: "<<min_rear_c<<endl;
 
@@ -185,8 +213,8 @@ vector<int> min_edge_out(const Mat& image)
     //    cv::rectangle(max_image, Point (min_rear_c, 0), Point (min_rear_c, image.rows),
     //                  cv::Scalar(0, 200, 0), 2, 8, 0);
     // // 将最小直径的两个横坐标返回
-    vector<int> x_min = {max_per_c, min_rear_c};
-    return x_min;
+
+
 }
 
 vector<int> get_diameter_nums(const Mat& image)
@@ -203,9 +231,13 @@ vector<int> get_diameter_nums(const Mat& image)
     return four_x;
 }
 void draw_line_diameter(Mat &image, vector<int> nums){
-    rectangle(image,Point(nums[0],0),Point(nums[0],image.rows), cv::Scalar(0,200,0));
-    rectangle(image,Point(nums[1],0),Point(nums[1],image.rows), cv::Scalar(0,200,0));
-    rectangle(image,Point(nums[2],0),Point(nums[2],image.rows), cv::Scalar(200,0,0));
-    rectangle(image,Point(nums[3],0),Point(nums[3],image.rows), cv::Scalar(200,0,0));
+    if(nums[0]!=-1&&nums[1]!=-1&&nums[2]!=-1&&nums[3]!=-1){
+        int thickness = 3;
+        rectangle(image,Point(nums[0],0),Point(nums[0],image.rows), cv::Scalar(0,200,0),thickness);
+        rectangle(image,Point(nums[1],0),Point(nums[1],image.rows), cv::Scalar(0,200,0),thickness);
+        rectangle(image,Point(nums[2],0),Point(nums[2],image.rows), cv::Scalar(200,0,0),thickness);
+        rectangle(image,Point(nums[3],0),Point(nums[3],image.rows), cv::Scalar(200,0,0),thickness);
+    }
+
 
 }

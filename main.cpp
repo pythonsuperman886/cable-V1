@@ -20,8 +20,8 @@ int cable(int argc,char* argv[]){
     return a.exec();
 }
 
-int Max_deal_pic(){
-    string path = "/home/explore/Downloads/28/19121.png";
+Mat Max_deal_pic(string path){
+//    string path = "/home/explore/data/28/18149.png";
     Mat image = imread(path);
     Mat gray_image;
     cvtColor(image,gray_image,CV_BGR2GRAY);
@@ -36,7 +36,7 @@ int Max_deal_pic(){
 
 
     Mat element = getStructuringElement(MORPH_RECT,
-                                        Size(30, 20));
+                                        Size(17, 17));
     //闭运算
     Mat close_result;
     morphologyEx(binary, close_result, MORPH_CLOSE,element);
@@ -46,29 +46,45 @@ int Max_deal_pic(){
     vector<Vec4i> hierarchy;
     findContours(close_result,contours,hierarchy,RETR_TREE,CHAIN_APPROX_SIMPLE,Point());
     cv::Rect stRect;
-    cv::Rect sRect = cv::Rect(0, 0, 0, 0);
-    cv::Rect sfRect = cv::Rect(0, 0, 0, 0);
+
+    vector<int> my_x;
     for (int i = 0; i < contours.size(); i++)
     {
 //        cv::Rect stRect = cv::Rect(0, 0, 0, 0);
         int sfarea;
         stRect = cv::boundingRect(contours[i]);
+//        cout<< stRect.x<<endl;
+//        cout<< stRect.y<<endl;
+
 //        if (stRect.area() < 2000) continue;
 //        sRect = sfRect | stRect;
 //        sfRect = cv::Rect(stRect);
-        cv::rectangle(image, stRect, cv::Scalar(0, 0, 255), 2, 8, 0);
+            for(int j = 0 ;j<contours[i].size();j++){
+                int x = contours[i][j].x;
+                my_x.push_back(x);
+            }
     }
+    vector<int>::iterator p = min_element(my_x.begin(), my_x.end());
 
+    int min_c = *p;
 
+    vector<int>::iterator q = max_element(my_x.begin(), my_x.end());
 
-    namedWindow("image",0);
-    imshow("image",image);
-    waitKey(0);
-    return 0;
+    int max_c = *q;
+//    cv::rectangle(image, Point (min_c, 20), Point (max_c, 20), cv::Scalar(0, 0, 255), 2, 8, 0);
+    cv::rectangle(image, Point (min_c, 0), Point (min_c, image.rows), cv::Scalar(0, 0, 200), 2, 8, 0);
+    cv::rectangle(image, Point (max_c, 0), Point (max_c, image.rows), cv::Scalar(0, 0, 200), 2, 8, 0);
+
+    return image;
+
+//    namedWindow("image",0);
+//    imshow("image",image);
+//    waitKey(0);
+//    return 0;
 }
 
-int min_edge_out(){
-    string path = "/home/explore/Downloads/28/19121.png";
+Mat min_edge_out(string path,Mat max_image){
+//    string path = "/home/explore/data/28/18149.png";
     Mat image = imread(path);
     Mat gray_image;
     cvtColor(image,gray_image,CV_BGR2GRAY);
@@ -76,7 +92,7 @@ int min_edge_out(){
     Mat blur;
     GaussianBlur(gray_image,blur,kernel_size,11);
     Mat binary;
-    cv::threshold(blur, binary, 30, 255, CV_THRESH_BINARY);/**/
+    cv::threshold(blur, binary, 25, 255, CV_THRESH_BINARY);/**/
 
 
     Mat dilate_element = getStructuringElement(MORPH_RECT,
@@ -123,16 +139,31 @@ int min_edge_out(){
     }
     cout<<"max: "<<max_per_c<<endl;
     cout<<"min: "<<min_rear_c<<endl;
-    return 0;
+
+//    rectangle(max_image,Point(max_per_c,10),Point(min_rear_c,10),cv::Scalar(0,255,0),3);
+    cv::rectangle(max_image, Point (max_per_c, 0), Point (max_per_c, image.rows), cv::Scalar(0, 200, 0), 2, 8, 0);
+    cv::rectangle(max_image, Point (min_rear_c, 0), Point (min_rear_c, image.rows), cv::Scalar(0, 200, 0), 2, 8, 0);
+
+
+//    namedWindow("image",0);
+//    imshow("image",image);
+//    waitKey(0);
+    return max_image;
+
+//    return 0;
 
 }
 
 int main(){
     cable(0,nullptr);
 //    min_edge_out();
-
-
-    return 0;
+//    string path ="/home/explore/data/28/18318.png";
+//    Mat max_image = Max_deal_pic(path);
+//    Mat result = min_edge_out(path,max_image);
+//    namedWindow("image",0);
+//    imshow("image",result);
+//    waitKey(0);
+//    return 0;
 
 }
 //int test() {
