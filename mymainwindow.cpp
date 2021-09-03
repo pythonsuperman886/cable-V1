@@ -67,7 +67,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 //    connect(ui->spinBox_defect_threshold, SIGNAL(valueChanged(int)),this,SLOT(change_defect_threshold(int)));
     ui->spinBox_defect_threshold->setMaximum(1640);
 
-    ui->spinBox_defect_threshold->setValue(630);
+    ui->spinBox_defect_threshold->setValue(30);
     ui->spinBox_block_size->setValue(31);
     ui->spinBox_block_size->setSingleStep(2);
     ui->spinBox_block_size->setRange(3,127);
@@ -109,7 +109,7 @@ void MyMainWindow::time_out(){
             Mat net_out = tester->Test(re_rect_mat,rect_lists);
             Mat camera_mat_test = camera_mat.clone();
             camera_mat_test = tester->rectangle_cable_defect(camera_mat_test,rect_lists);
-//            net_out = tester->rectangle_cable_defect(net_out,rect_lists);
+            net_out = tester->rectangle_cable_defect(net_out,rect_lists);
 
             vector<int> diameter_nums = get_diameter_nums(camera_mat);
             draw_line_diameter(camera_mat_test,diameter_nums);

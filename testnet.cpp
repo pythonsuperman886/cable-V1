@@ -64,8 +64,8 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
     Mat border_image_to_origin;
     Mat resize_image_to_rect;
 
-//    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
-    cv::threshold(fake_image, fake_image, 25, 255, CV_THRESH_BINARY);
+    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
+//    cv::threshold(fake_image, fake_image, 25, 255, CV_THRESH_BINARY);
 
     resize(fake_image,resize_image_to_rect,Size(rect_image_width,rect_image_height));
 
@@ -78,23 +78,31 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
 
     vector<Rect> rect_lists;
 
+    double ratio_w = double(border_image_to_origin.cols)/double(fake_image.cols);
+    double ratio_h = double(border_image_to_origin.rows)/double(fake_image.rows);
+//    double ratio = ratio_w/ratio_h;
+    cout<<"ratio_w: "<<ratio_w<<endl;
+    cout<<"ratio_h: "<<ratio_h<<endl;
+//    cout<<"ratio: "<<ratio<<endl;
+//    cout<<"ratio_w: "<<ratio_w<<endl;
+
 //    cvtColor(rectangle_image_real,rectangle_image_real,CV_GRAY2BGR);
 //    cvtColor(rectangle_image_fake,rectangle_image_fake,CV_GRAY2BGR);
     int nccomps = cv::connectedComponentsWithStats (
-            border_image_to_origin, labels,
+            fake_image, labels,
             stats, centroids
             );
-    for( int y = 0; y < border_image_to_origin.rows; y++ )
-        for( int x = 0; x < border_image_to_origin.cols; x++ )
+    for( int y = 0; y < fake_image.rows; y++ )
+        for( int x = 0; x < fake_image.cols; x++ )
         {
             int label = labels.at<int>(y, x);
             CV_Assert(0 <= label && label <= nccomps);
             if( stats.at<int>(label, cv::CC_STAT_AREA) >defect_threhold && label !=0){
                 Is_save = true;
-                int x_l = stats.at<int>(label, cv::CC_STAT_LEFT);
-                int y_l = stats.at<int>(label, cv::CC_STAT_TOP);
-                int w = stats.at<int>(label, cv::CC_STAT_WIDTH);
-                int h = stats.at<int>(label, cv::CC_STAT_HEIGHT);
+                int x_l = double(stats.at<int>(label, cv::CC_STAT_LEFT)*ratio_w);
+                int y_l = double(stats.at<int>(label, cv::CC_STAT_TOP)*ratio_h);
+                int w = double(stats.at<int>(label, cv::CC_STAT_WIDTH)*ratio_w);
+                int h = double(stats.at<int>(label, cv::CC_STAT_HEIGHT)*ratio_h);
                 rect_lists.emplace_back(x_l,y_l,w,h);
 //                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,200));
 //                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,200));

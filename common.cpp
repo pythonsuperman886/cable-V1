@@ -78,7 +78,7 @@ vector<int> Max_deal_pic(const Mat& image)
     GaussianBlur(image,blur,kernel_size,19);
     // 二值化
     Mat binary;
-    cv::threshold(blur, binary, 40, 255, CV_THRESH_BINARY);
+    cv::threshold(blur, binary, 30, 255, CV_THRESH_BINARY);
     // 查找图片边缘
     Canny(binary,binary,150,255);
     // 闭运算
@@ -144,7 +144,7 @@ vector<int> min_edge_out(const Mat& image)
     GaussianBlur(image,blur,kernel_size,11);
     // 二值化
     Mat binary;
-    cv::threshold(blur, binary, 25, 255, CV_THRESH_BINARY);
+    cv::threshold(blur, binary, 40, 255, CV_THRESH_BINARY);
     // 膨胀
     Mat dilate_element = getStructuringElement(MORPH_RECT,
                                                Size(15, 15));
