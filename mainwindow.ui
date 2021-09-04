@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>20</y>
-      <width>1900</width>
-      <height>1000</height>
+      <y>0</y>
+      <width>1911</width>
+      <height>1041</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -446,18 +446,18 @@
        <rect>
         <x>15</x>
         <y>581</y>
-        <width>801</width>
-        <height>381</height>
+        <width>871</width>
+        <height>411</height>
        </rect>
       </property>
      </widget>
      <widget class="QTableView" name="tableView_all_info">
       <property name="geometry">
        <rect>
-        <x>825</x>
-        <y>581</y>
-        <width>521</width>
-        <height>381</height>
+        <x>930</x>
+        <y>580</y>
+        <width>551</width>
+        <height>411</height>
        </rect>
       </property>
      </widget>

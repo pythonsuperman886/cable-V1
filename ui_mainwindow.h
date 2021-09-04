@@ -81,7 +81,7 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(20, 20, 1900, 1000));
+        tabWidget->setGeometry(QRect(20, 0, 1911, 1041));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new MyLabel(tab_camera);
@@ -238,10 +238,10 @@ public:
         spinBox_block_size->setFont(font4);
         line_chart_view = new QChartView(tab_test);
         line_chart_view->setObjectName(QStringLiteral("line_chart_view"));
-        line_chart_view->setGeometry(QRect(15, 581, 801, 381));
+        line_chart_view->setGeometry(QRect(15, 581, 871, 411));
         tableView_all_info = new QTableView(tab_test);
         tableView_all_info->setObjectName(QStringLiteral("tableView_all_info"));
-        tableView_all_info->setGeometry(QRect(825, 581, 521, 381));
+        tableView_all_info->setGeometry(QRect(930, 580, 551, 411));
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
