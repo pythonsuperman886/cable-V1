@@ -135,7 +135,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     palette.setColor(QPalette::Base,QColor(255,255,255));
     palette.setColor(QPalette::AlternateBase,QColor(233,245,252));
     ui->tableView_all_info->setPalette(palette);
-
+    ui->tableView_all_info->scrollToBottom();
 }
 
 void MyMainWindow::time_out(){
@@ -379,6 +379,8 @@ void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diamet
 
     line_chart->setAxisY(axisY,series_defect);
     line_chart->setAxisX(axisX,series_defect);
+    ui->tableView_all_info->scrollToBottom();
+
 //    line_chart->r
 //    ui->line_chart_view->setChart(line_chart);
     cout<<"add end : "<<pic_num<<endl;
