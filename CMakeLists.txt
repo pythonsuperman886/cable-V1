@@ -11,7 +11,7 @@ set (app_icon icon.rc)
 
 set(CMAKE_PREFIX_PATH  /home/explore/envs/Qt/5.9.8/gcc_64/lib/cmake)
 set(Torch_DIR /home/explore/envs/libtorch/share/cmake/Torch)
-set(OpenCV_DIR /home/explore/envs/opencv_install/share/OpenCV)
+set(OpenCV_DIR /home/explore/envs/opencv_install2/share/OpenCV)
 
 set(CMAKE_INCLUDE_CURRENT_DIR  ON)
 
@@ -25,6 +25,8 @@ FIND_PACKAGE(Qt5Core REQUIRED)
 FIND_PACKAGE(Qt5Sql REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 FIND_PACKAGE(Qt5Concurrent REQUIRED)
+FIND_PACKAGE(Qt5Charts REQUIRED)
+
 find_package(OpenMP REQUIRED)
 
 
@@ -49,7 +51,7 @@ aux_source_directory(. DIR_SRCS)
 add_executable(main ${DIR_SRCS} )
 #add_executable(main main.cpp)
 #target_link_libraries(main python3.6m pthread )
-target_link_libraries(main boost_filesystem "${Boost_LIBRARIES}" "${TORCH_LIBRARIES}" "${OpenCV_LIBS}" Qt5::Widgets "${QT_LIBS}" MvCameraControl  OpenMP::OpenMP_CXX  )
+target_link_libraries(main boost_filesystem "${Boost_LIBRARIES}" "${TORCH_LIBRARIES}" "${OpenCV_LIBS}" Qt5::Widgets Qt5::Charts "${QT_LIBS}" MvCameraControl  OpenMP::OpenMP_CXX  )
 set_property(TARGET main PROPERTY CXX_STANDARD 17)
 
 message("${Torch_INCLUDE_DIRS}")

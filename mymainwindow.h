@@ -15,6 +15,10 @@
 #include <QTextStream>
 #include <QFile>
 #include "preprocess.h"
+#include <QtCharts>
+#include <QTableView>
+#include <QStandardItemModel>
+
 namespace Ui {
     class MainWindow;
 }
@@ -35,6 +39,7 @@ public:
     void change_defect_threshold(int i);
     void set_group_id();
     Rect get_rect(int w,int h);
+    void add_defect_num(int pic_num,int num, const vector<int>& diameter_nums);
 
 signals:
     void train();
@@ -59,6 +64,17 @@ private:
     int frame_num = 0;
     Mat camera_mat;
     QImage camera_qt;
+    vector<Rect> defect_rect_lists;
+
+
+    QChart *line_chart;
+    QLineSeries *series_defect;
+    QValueAxis *axisX;
+    QValueAxis *axisY;
+    QList<QPointF> point_lists;
+
+    QStandardItemModel *model;
+    int model_count = 0;
 
     Mat re_rect_mat;
     QImage test_camera_qt;

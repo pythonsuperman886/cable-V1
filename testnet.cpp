@@ -92,23 +92,33 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
             fake_image, labels,
             stats, centroids
             );
-    for( int y = 0; y < fake_image.rows; y++ )
-        for( int x = 0; x < fake_image.cols; x++ )
-        {
-            int label = labels.at<int>(y, x);
-            CV_Assert(0 <= label && label <= nccomps);
-            if( stats.at<int>(label, cv::CC_STAT_AREA) >defect_threhold && label !=0){
-                Is_save = true;
-                int x_l = double(stats.at<int>(label, cv::CC_STAT_LEFT)*ratio_w);
-                int y_l = double(stats.at<int>(label, cv::CC_STAT_TOP)*ratio_h);
-                int w = double(stats.at<int>(label, cv::CC_STAT_WIDTH)*ratio_w);
-                int h = double(stats.at<int>(label, cv::CC_STAT_HEIGHT)*ratio_h);
-                rect_lists.emplace_back(x_l,y_l,w,h);
-//                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,200));
-//                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,200));
-                //                cv::imwrite("../checkpoints/test_results/defect"+to_string(test_num)+".jpg",rectangle_image_real);
-            }
+
+    for(int i =1;i<nccomps;i++){
+        if(stats.at<int>(i,cv::CC_STAT_AREA)>defect_threhold){
+            int x_l = double(stats.at<int>(i, cv::CC_STAT_LEFT)*ratio_w);
+            int y_l = double(stats.at<int>(i, cv::CC_STAT_TOP)*ratio_h);
+            int w = double(stats.at<int>(i, cv::CC_STAT_WIDTH)*ratio_w);
+            int h = double(stats.at<int>(i, cv::CC_STAT_HEIGHT)*ratio_h);
+            rect_lists.emplace_back(x_l,y_l,w,h);
         }
+    }
+//    for( int y = 0; y < fake_image.rows; y++ )
+//        for( int x = 0; x < fake_image.cols; x++ )
+//        {
+//            int label = labels.at<int>(y, x);
+//            CV_Assert(0 <= label && label <= nccomps);
+//            if( stats.at<int>(label, cv::CC_STAT_AREA) >defect_threhold && label !=0){
+//                Is_save = true;
+//                int x_l = double(stats.at<int>(label, cv::CC_STAT_LEFT)*ratio_w);
+//                int y_l = double(stats.at<int>(label, cv::CC_STAT_TOP)*ratio_h);
+//                int w = double(stats.at<int>(label, cv::CC_STAT_WIDTH)*ratio_w);
+//                int h = double(stats.at<int>(label, cv::CC_STAT_HEIGHT)*ratio_h);
+//                rect_lists.emplace_back(x_l,y_l,w,h);
+////                rectangle(rectangle_image_fake,Point(x_l,y_l),Point(x_l+w,y_l+h),cv::Scalar(0,0,200));
+////                rectangle(rectangle_image_real,Point(x_l,y_l),Point(x_l+w,y_l+h), cv::Scalar(0,0,200));
+//                //                cv::imwrite("../checkpoints/test_results/defect"+to_string(test_num)+".jpg",rectangle_image_real);
+//            }
+//        }
 
 //    vector<Mat> rectangle_images={rectangle_image_real,
 //                                  rectangle_image_fake};

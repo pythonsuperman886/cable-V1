@@ -34,11 +34,12 @@
 #include <iostream>
 using namespace cv;
 using namespace std;
-using namespace at;
+using at::Tensor;
+using at::Device;
 QImage Mat2QImage( const cv::Mat& InputMat);
-Tensor Mat2Tensor(Mat camera_frame);
-Tensor denorm(const torch::Tensor& tensor);
-Mat Tensor2Mat(const Tensor& tensor);
+at::Tensor Mat2Tensor(Mat camera_frame);
+at::Tensor denorm(const torch::Tensor& tensor);
+Mat Tensor2Mat(const at::Tensor& tensor);
 vector<int> min_edge_out(const Mat& image);
 vector<int> Max_deal_pic(const Mat& image);
 vector<int> get_diameter_nums(const Mat& image);

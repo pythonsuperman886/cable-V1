@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1545</width>
-    <height>980</height>
+    <width>1920</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>1541</width>
-      <height>941</height>
+      <width>1900</width>
+      <height>1000</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -355,8 +355,8 @@
      <widget class="QLabel" name="label_defect_result">
       <property name="geometry">
        <rect>
-        <x>720</x>
-        <y>110</y>
+        <x>710</x>
+        <y>100</y>
         <width>640</width>
         <height>480</height>
        </rect>
@@ -441,6 +441,26 @@
        </font>
       </property>
      </widget>
+     <widget class="QChartView" name="line_chart_view">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>581</y>
+        <width>801</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tableView_all_info">
+      <property name="geometry">
+       <rect>
+        <x>825</x>
+        <y>581</y>
+        <width>521</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -449,7 +469,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1545</width>
+     <width>1920</width>
      <height>22</height>
     </rect>
    </property>
@@ -461,6 +481,11 @@
    <class>MyLabel</class>
    <extends>QLabel</extends>
    <header>mylabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtCharts</header>
   </customwidget>
  </customwidgets>
  <resources/>

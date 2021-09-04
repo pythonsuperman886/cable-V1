@@ -24,8 +24,10 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
+#include "QtCharts"
 #include "mylabel.h"
 
 QT_BEGIN_NAMESPACE
@@ -64,6 +66,8 @@ public:
     QSpinBox *spinBox_defect_threshold;
     QLabel *label_block_size;
     QSpinBox *spinBox_block_size;
+    QChartView *line_chart_view;
+    QTableView *tableView_all_info;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QButtonGroup *buttonGroup_blur;
@@ -72,12 +76,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1545, 980);
+        MainWindow->resize(1920, 1080);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(20, 20, 1541, 941));
+        tabWidget->setGeometry(QRect(20, 20, 1900, 1000));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new MyLabel(tab_camera);
@@ -209,7 +213,7 @@ public:
         label_test_camera_image->setGeometry(QRect(30, 100, 640, 480));
         label_defect_result = new QLabel(tab_test);
         label_defect_result->setObjectName(QStringLiteral("label_defect_result"));
-        label_defect_result->setGeometry(QRect(720, 110, 640, 480));
+        label_defect_result->setGeometry(QRect(710, 100, 640, 480));
         label_defect_threshold = new QLabel(tab_test);
         label_defect_threshold->setObjectName(QStringLiteral("label_defect_threshold"));
         label_defect_threshold->setGeometry(QRect(670, 20, 221, 31));
@@ -232,11 +236,17 @@ public:
         spinBox_block_size->setObjectName(QStringLiteral("spinBox_block_size"));
         spinBox_block_size->setGeometry(QRect(1090, 10, 91, 51));
         spinBox_block_size->setFont(font4);
+        line_chart_view = new QChartView(tab_test);
+        line_chart_view->setObjectName(QStringLiteral("line_chart_view"));
+        line_chart_view->setGeometry(QRect(15, 581, 801, 381));
+        tableView_all_info = new QTableView(tab_test);
+        tableView_all_info->setObjectName(QStringLiteral("tableView_all_info"));
+        tableView_all_info->setGeometry(QRect(825, 581, 521, 381));
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1545, 22));
+        menubar->setGeometry(QRect(0, 0, 1920, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));

@@ -14,6 +14,12 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 
     ui->setupUi(this);
     set_group_id();
+
+//    ui->centralwidget->setStyleSheet("background-color:rgb(85,87,83)");
+//    ui->tabWidget->setStyleSheet("background-color:rgb(46, 52, 54)");
+//    ui->tabWidget->setStyleSheet("background-color:rgb(0,0,0)");
+
+
     ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_test_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_defect_result->setStyleSheet("QLabel{background:#000000;}");
@@ -72,7 +78,63 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     ui->spinBox_block_size->setSingleStep(2);
     ui->spinBox_block_size->setRange(3,127);
     timer->start(frequency);
+    line_chart = new QChart();
+    line_chart->setTheme(QChart::ChartThemeDark);
+    line_chart->setTitle("Defect nums");
+    series_defect = new QLineSeries(line_chart);
+
+    line_chart->addSeries(series_defect);
+
+    series_defect->setName(QString("Defect Nums"));
+    series_defect->setUseOpenGL(true);
+
+    ui->line_chart_view->setRubberBand(QChartView::HorizontalRubberBand);
+    ui->line_chart_view->setRenderHint(QPainter::Antialiasing);
+    line_chart->createDefaultAxes();
+    axisX = new QValueAxis;
+    axisY = new QValueAxis;
+    axisX->setRange(0,100);
+    axisX->setTitleText("Pic");
+    axisY->setRange(0,10);
+    axisY->setTitleText("Defect");
+
+//    axisX->setTickCount(100);
+    axisY->setTickCount(10);
+//    line_chart->addAxis(axisX,Qt::AlignBottom);
+
+//    series_defect->append(QPointF(1,100));
+//    series_defect->append(QPointF(2,200));
+//    series_defect->append(QPointF(3,300));
+//    series_defect->append(QPointF(4,400));
+    line_chart->setAxisY(axisY,series_defect);
+    line_chart->setAxisX(axisX,series_defect);
+    line_chart->legend()->hide();
+    ui->line_chart_view->setChart(line_chart);
+
+
+    line_chart->setAnimationOptions(QChart::SeriesAnimations);
+    line_chart->legend()->setVisible(true);
+//    line_chart->axisX()->setRange(0,100);
+//    line_chart->axisY()->setRange(0,100);
+//    line_chart->setAnimationOptions(QChart::NoAnimation);
 //    (stdout);//绑定cout到标准输出
+
+    model = new QStandardItemModel(this);
+    model->setColumnCount(4);
+    model->setHeaderData(0,Qt::Horizontal,"Pic");
+    model->setHeaderData(1,Qt::Horizontal,"Defect num");
+    model->setHeaderData(2,Qt::Horizontal,"Min Diameter");
+    model->setHeaderData(3,Qt::Horizontal,"Max Diameter");
+
+    ui->tableView_all_info->setModel(model);
+    ui->tableView_all_info->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+//    ui->tableView_all_info->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView_all_info->setAlternatingRowColors(true);
+
+    QPalette palette;
+    palette.setColor(QPalette::Base,QColor(255,255,255));
+    palette.setColor(QPalette::AlternateBase,QColor(233,245,252));
+    ui->tableView_all_info->setPalette(palette);
 
 }
 
@@ -105,15 +167,17 @@ void MyMainWindow::time_out(){
             ui->label_data_counts->setNum(save_data_nums);
         }
         if(Is_test){
-            vector<Rect> rect_lists;
-            Mat net_out = tester->Test(re_rect_mat,rect_lists);
+//            vector<Rect> defect_rect_lists;
+            defect_rect_lists.clear();
+            Mat net_out = tester->Test(re_rect_mat,defect_rect_lists);
             Mat camera_mat_test = camera_mat.clone();
-            camera_mat_test = tester->rectangle_cable_defect(camera_mat_test,rect_lists);
-            net_out = tester->rectangle_cable_defect(net_out,rect_lists);
+            camera_mat_test = tester->rectangle_cable_defect(camera_mat_test,defect_rect_lists);
+            net_out = tester->rectangle_cable_defect(net_out,defect_rect_lists);
 
             vector<int> diameter_nums = get_diameter_nums(camera_mat);
             draw_line_diameter(camera_mat_test,diameter_nums);
-//
+            cout<<"num: "<<tester->test_num<<endl;
+            add_defect_num(tester->test_num,defect_rect_lists.size(),diameter_nums);
 //            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
 
 
@@ -275,3 +339,54 @@ void MyMainWindow::set_group_id() {
     ui->buttonGroup_blur->setId(ui->radioButton_medianBlur,3);
     ui->buttonGroup_blur->setId(ui->radioButton_blur_none,4);
 }
+
+void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diameter_nums) {
+    cout<<"add : "<<num<<endl;
+    int max_width = -1;
+    int min_wdith = -1;
+    if(diameter_nums[0]!=-1&&diameter_nums[1]!=-1&&diameter_nums[2]!=-1&&diameter_nums[3]!=-1){
+
+         max_width = diameter_nums[1]- diameter_nums[0];
+         min_wdith = diameter_nums[3]- diameter_nums[2];
+
+    }
+    line_chart->removeSeries(series_defect);
+    QList<QStandardItem*> list;
+    list.append(new QStandardItem(QString::number(pic_num)));
+    list.append(new QStandardItem(QString::number(num)));
+    list.append(new QStandardItem(QString::number(min_wdith)));
+    list.append(new QStandardItem(QString::number(max_width)));
+    model->insertRow(model_count++,list);
+    if(pic_num>100){
+        axisX->setRange(pic_num-100,pic_num+10);
+        point_lists.pop_front();
+    }
+    point_lists.append(QPointF(pic_num,num));
+//    line_chart->removeAllSeries();
+//    QPointF p(pic_num,num);
+//    series_defect->append(p);
+//    series_defect->append(QPointF(pic_num,num));
+    series_defect->replace(point_lists);
+//
+//    line_chart->createDefaultAxes();
+//    axisX->setRange(0,1000);
+//    axisY->setRange(0,50000);
+//    axisX->setTickCount(100);
+//    axisY->setTickCount(1000);
+//    line_chart->addAxis(axisX,Qt::AlignBottom);
+//    line_chart->addAxis(axisY,Qt::AlignLeft);
+    line_chart->addSeries(series_defect);
+
+    line_chart->setAxisY(axisY,series_defect);
+    line_chart->setAxisX(axisX,series_defect);
+//    line_chart->r
+//    ui->line_chart_view->setChart(line_chart);
+    cout<<"add end : "<<pic_num<<endl;
+
+//
+//
+
+//    line_chart->createDefaultAxes();
+
+}
+

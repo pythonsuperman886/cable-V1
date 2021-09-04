@@ -25,13 +25,13 @@ public:
     int copy_border_right=0;
     int rect_image_width=640;
     int rect_image_height=480;
+    int test_num=0;
 
 private:
     bool Is_save=false;
 //    Scalar rectangle_color;
 //    int color;
     cv::Scalar rectangle_color;
-    int test_num=0;
     bool cuda_available;
     torch::Device device;
     UNet_Generator G;
