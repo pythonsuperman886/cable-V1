@@ -49,7 +49,7 @@ Trainer::Trainer():cuda_available(torch::cuda::is_available()),
 
 }
 void Trainer::train() {
-    for (size_t epoch = 0; epoch != num_epochs; ++epoch) {
+    for (; epoch != num_epochs; ++epoch) {
 
 
         QCoreApplication::processEvents();
@@ -150,6 +150,9 @@ void Trainer::train() {
                 ofs.flush();
 
             }
+            loss.epoch = epoch;
+            loss.g_loss = loss_G.item<double>();
+            loss.d_loss = loss_D.item<double>();
 //            ofs.write()
             //            torch::save
 
@@ -218,6 +221,15 @@ void Trainer::init(string train_dir) {
 
 void Trainer::stop_train() {
     Is_continue_train = false;
+}
+
+My_LOSS Trainer::get_loss_info() {
+
+//    std::cout << "Epoch [" << epoch << "/" << num_epochs << "], Step [" << batch_index + 1 << "/"
+//    << num_samples / batch_size << "], d_loss: " << loss_D.item<double>() << ", g_loss: "
+//    << loss_G.item<double>()<<"\n";
+
+    return loss;
 }
 
 

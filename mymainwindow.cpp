@@ -22,15 +22,17 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 
     ui->lcdNumber_train_time->setDigitCount(8);
 //    ui->lcdNumber_train_time->setMode(QLCDNumber::Dec);
-    ui->lcdNumber_train_time->setStyleSheet("border: 1px solid green; color: green; background-color:rgb(255,255,250);");
+    ui->lcdNumber_train_time->setStyleSheet("border: 1px solid green; color: rgb(0,200,0); background-color:rgb(255,255,250);");
     ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_test_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_defect_result->setStyleSheet("QLabel{background:#000000;}");
     ui->label_train_result->setStyleSheet("QLabel{background:#000000;}");
 
 
-
-
+    train_loss_chart = new Train_loss_chart();
+    test_pie_chart = new My_test_pie_chart();
+    train_loss_chart->init(ui->graphicsView_train_loss);
+    test_pie_chart->init(ui->graphicsView_pie_chart);
     ui->spinBox_blur_num->setRange(1, 71);//设置范围
     ui->spinBox_blur_num->setValue(1); //设置当前值
     ui->spinBox_blur_num->setSingleStep(2);
@@ -202,11 +204,13 @@ void MyMainWindow::time_out(){
 
             QByteArray t = qfile.readAll();
             ui->textEdit_train_log->append(QString(t));
-            ui->label_train_result->setGeometry(QRect(690, 170, trainer->combine.cols, trainer->combine.rows));
+            ui->label_train_result->setGeometry(QRect(690, 50, trainer->combine.cols, trainer->combine.rows));
             train_result = Mat2QImage(trainer->combine);
 //            ui->label_train_result->sewidt
 //            train_result = Mat2QImage(trainer->combine).scaled(width_train_image_label,height_train_image_label);
             ui->label_train_result->setPixmap(QPixmap::fromImage(train_result));
+            My_LOSS loss = trainer->get_loss_info();
+            train_loss_chart->add_loss_info(loss);
 
 //            cout.
 //            cout.flush();
@@ -368,6 +372,7 @@ void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diamet
     list.append(new QStandardItem(QString::number(num)));
     list.append(new QStandardItem(QString::number(min_wdith)));
     list.append(new QStandardItem(QString::number(max_width)));
+
     model->insertRow(model_count++,list);
     if(pic_num>100){
         axisX->setRange(pic_num-100,pic_num+10);
@@ -392,7 +397,13 @@ void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diamet
     line_chart->setAxisY(axisY,series_defect);
     line_chart->setAxisX(axisX,series_defect);
     ui->tableView_all_info->scrollToBottom();
+    if(num==0)
+        good_num++;
+    else{
+        bad_num++;
+    }
 
+    test_pie_chart->add_pie_info(good_num,bad_num);
 //    line_chart->r
 //    ui->line_chart_view->setChart(line_chart);
 //    cout<<"add end : "<<pic_num<<endl;

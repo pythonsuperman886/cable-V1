@@ -60,6 +60,7 @@ public:
     QLabel *label_batch_size;
     QSpinBox *spinBox_batch_size;
     QLCDNumber *lcdNumber_train_time;
+    QChartView *graphicsView_train_loss;
     QWidget *tab_test;
     QPushButton *pushButton_test;
     QLabel *label_model_path;
@@ -72,6 +73,7 @@ public:
     QSpinBox *spinBox_block_size;
     QChartView *line_chart_view;
     QTableView *tableView_all_info;
+    QChartView *graphicsView_pie_chart;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QButtonGroup *buttonGroup_blur;
@@ -193,7 +195,7 @@ public:
         textEdit_train_log->setGeometry(QRect(50, 160, 611, 661));
         label_train_result = new QLabel(tab_train);
         label_train_result->setObjectName(QStringLiteral("label_train_result"));
-        label_train_result->setGeometry(QRect(690, 170, 581, 241));
+        label_train_result->setGeometry(QRect(690, 30, 581, 241));
         label_batch_size = new QLabel(tab_train);
         label_batch_size->setObjectName(QStringLiteral("label_batch_size"));
         label_batch_size->setGeometry(QRect(260, 86, 131, 31));
@@ -219,6 +221,9 @@ public:
         font7.setItalic(false);
         font7.setWeight(50);
         lcdNumber_train_time->setFont(font7);
+        graphicsView_train_loss = new QChartView(tab_train);
+        graphicsView_train_loss->setObjectName(QStringLiteral("graphicsView_train_loss"));
+        graphicsView_train_loss->setGeometry(QRect(690, 510, 1031, 641));
         tabWidget->addTab(tab_train, QString());
         tab_test = new QWidget();
         tab_test->setObjectName(QStringLiteral("tab_test"));
@@ -270,7 +275,10 @@ public:
         line_chart_view->setGeometry(QRect(15, 581, 871, 411));
         tableView_all_info = new QTableView(tab_test);
         tableView_all_info->setObjectName(QStringLiteral("tableView_all_info"));
-        tableView_all_info->setGeometry(QRect(930, 580, 551, 411));
+        tableView_all_info->setGeometry(QRect(900, 580, 401, 411));
+        graphicsView_pie_chart = new QChartView(tab_test);
+        graphicsView_pie_chart->setObjectName(QStringLiteral("graphicsView_pie_chart"));
+        graphicsView_pie_chart->setGeometry(QRect(1310, 580, 421, 411));
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -283,7 +291,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

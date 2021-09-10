@@ -17,6 +17,7 @@ public:
     void init(string data_path);
     void train();
     void stop_train();
+    My_LOSS get_loss_info();
     Mat combine;
     int64_t batch_size = 1;
 
@@ -28,7 +29,7 @@ private:
     torch::Device device;
     const std::string sample_output_dir_path = "../output/";
     string input_dir;
-
+    size_t epoch = 0;
     const size_t num_epochs = 2000;
     const double learning_rate = 0.0002;
     int image_resize_num = 128;
@@ -62,6 +63,8 @@ private:
     torch::Tensor loss_G, loss_G_L1, loss_G_GAN;
     torch::Tensor pred_real;
     torch::Tensor real_AB;
+    My_LOSS loss;
+
 
 };
 

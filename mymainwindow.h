@@ -100,6 +100,12 @@ private:
     int height_train_image_label;
     My_Time my_train_time;
     QTimer *count_train_timer;
+
+    Train_loss_chart * train_loss_chart;
+    My_test_pie_chart * test_pie_chart;
+
+    int good_num = 0;
+    int bad_num = 0;
     public slots:
     void on_spinBox_defect_threshold_valueChanged(int i);
     void on_spinBox_block_size_valueChanged(int i);
