@@ -26,10 +26,10 @@ void MySplashScreen::set_progeress(){
         number_list.append(i*temp_time);
         QTimer::singleShot(temp_time+i,this,SLOT(slot_update_progress()));
 //        progress_bar->setValue(i);
-        cout<<"shot: "<<i*temp_time<<endl;
+//        cout<<"shot: "<<i*temp_time<<endl;
 
     }
-    cout<<"close"<<endl;
+//    cout<<"close"<<endl;
     QTimer::singleShot(elapse_time,this,SLOT(close()));
 }
 
@@ -42,7 +42,7 @@ void MySplashScreen::generate_randon_number(){
 }
 void MySplashScreen::slot_update_progress(){
     progress_bar->setValue(number_list[num]);
-    cout<<number_list[num]<<endl;
+//    cout<<number_list[num]<<endl;
     num+=1;
 //    QSplashScreen::repaint();
 };

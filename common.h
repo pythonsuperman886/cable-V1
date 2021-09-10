@@ -44,5 +44,17 @@ vector<int> min_edge_out(const Mat& image);
 vector<int> Max_deal_pic(const Mat& image);
 vector<int> get_diameter_nums(const Mat& image);
 void draw_line_diameter(Mat &image, vector<int> nums);
+typedef struct mytime{
+    int hour=0;
+    int minu=0;
+    int sec =0;
+    bool Is_start = false;
+    void init(){
+        hour=0;
+        minu=0;
+        sec =0;
+        Is_start = false;
+    }
 
+} My_Time;
 #endif //CABLE_V1_COMMON_H

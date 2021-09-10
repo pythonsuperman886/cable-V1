@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
@@ -56,6 +57,9 @@ public:
     QPushButton *pushButton_train_flag;
     QTextEdit *textEdit_train_log;
     QLabel *label_train_result;
+    QLabel *label_batch_size;
+    QSpinBox *spinBox_batch_size;
+    QLCDNumber *lcdNumber_train_time;
     QWidget *tab_test;
     QPushButton *pushButton_test;
     QLabel *label_model_path;
@@ -76,12 +80,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1920, 1080);
+        MainWindow->resize(1790, 1254);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(20, 0, 1911, 1041));
+        tabWidget->setGeometry(QRect(30, 10, 1741, 1201));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new MyLabel(tab_camera);
@@ -190,6 +194,31 @@ public:
         label_train_result = new QLabel(tab_train);
         label_train_result->setObjectName(QStringLiteral("label_train_result"));
         label_train_result->setGeometry(QRect(690, 170, 581, 241));
+        label_batch_size = new QLabel(tab_train);
+        label_batch_size->setObjectName(QStringLiteral("label_batch_size"));
+        label_batch_size->setGeometry(QRect(260, 86, 131, 31));
+        QFont font5;
+        font5.setPointSize(17);
+        font5.setBold(true);
+        font5.setWeight(75);
+        label_batch_size->setFont(font5);
+        spinBox_batch_size = new QSpinBox(tab_train);
+        spinBox_batch_size->setObjectName(QStringLiteral("spinBox_batch_size"));
+        spinBox_batch_size->setGeometry(QRect(390, 70, 111, 61));
+        QFont font6;
+        font6.setPointSize(16);
+        font6.setBold(true);
+        font6.setWeight(75);
+        spinBox_batch_size->setFont(font6);
+        lcdNumber_train_time = new QLCDNumber(tab_train);
+        lcdNumber_train_time->setObjectName(QStringLiteral("lcdNumber_train_time"));
+        lcdNumber_train_time->setGeometry(QRect(270, 830, 381, 101));
+        QFont font7;
+        font7.setPointSize(20);
+        font7.setBold(false);
+        font7.setItalic(false);
+        font7.setWeight(50);
+        lcdNumber_train_time->setFont(font7);
         tabWidget->addTab(tab_train, QString());
         tab_test = new QWidget();
         tab_test->setObjectName(QStringLiteral("tab_test"));
@@ -200,11 +229,11 @@ public:
         label_model_path = new QLabel(tab_test);
         label_model_path->setObjectName(QStringLiteral("label_model_path"));
         label_model_path->setGeometry(QRect(30, 10, 121, 51));
-        QFont font5;
-        font5.setPointSize(16);
-        font5.setBold(false);
-        font5.setWeight(50);
-        label_model_path->setFont(font5);
+        QFont font8;
+        font8.setPointSize(16);
+        font8.setBold(false);
+        font8.setWeight(50);
+        label_model_path->setFont(font8);
         lineEdit_model_path = new QLineEdit(tab_test);
         lineEdit_model_path->setObjectName(QStringLiteral("lineEdit_model_path"));
         lineEdit_model_path->setGeometry(QRect(170, 10, 311, 41));
@@ -221,13 +250,13 @@ public:
         spinBox_defect_threshold = new QSpinBox(tab_test);
         spinBox_defect_threshold->setObjectName(QStringLiteral("spinBox_defect_threshold"));
         spinBox_defect_threshold->setGeometry(QRect(860, 10, 81, 51));
-        QFont font6;
-        font6.setPointSize(15);
-        font6.setBold(true);
-        font6.setUnderline(false);
-        font6.setWeight(75);
-        font6.setStrikeOut(false);
-        spinBox_defect_threshold->setFont(font6);
+        QFont font9;
+        font9.setPointSize(15);
+        font9.setBold(true);
+        font9.setUnderline(false);
+        font9.setWeight(75);
+        font9.setStrikeOut(false);
+        spinBox_defect_threshold->setFont(font9);
         label_block_size = new QLabel(tab_test);
         label_block_size->setObjectName(QStringLiteral("label_block_size"));
         label_block_size->setGeometry(QRect(970, 30, 121, 17));
@@ -246,7 +275,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1920, 22));
+        menubar->setGeometry(QRect(0, 0, 1790, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -254,7 +283,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -275,6 +304,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_camera), QApplication::translate("MainWindow", "Camera", Q_NULLPTR));
         pushButton_train_flag->setText(QApplication::translate("MainWindow", "Train", Q_NULLPTR));
         label_train_result->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_batch_size->setText(QApplication::translate("MainWindow", "Batch Size:", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_train), QApplication::translate("MainWindow", "Train", Q_NULLPTR));
         pushButton_test->setText(QApplication::translate("MainWindow", "Test", Q_NULLPTR));
         label_model_path->setText(QApplication::translate("MainWindow", "Model Path:", Q_NULLPTR));

@@ -11,7 +11,7 @@ set (app_icon icon.rc)
 
 set(CMAKE_PREFIX_PATH  /home/explore/envs/Qt/5.9.8/gcc_64/lib/cmake)
 set(Torch_DIR /home/explore/envs/libtorch/share/cmake/Torch)
-set(OpenCV_DIR /home/explore/envs/opencv_install2/share/OpenCV)
+set(OpenCV_DIR /home/explore/envs/opencv_install/share/OpenCV)
 
 set(CMAKE_INCLUDE_CURRENT_DIR  ON)
 

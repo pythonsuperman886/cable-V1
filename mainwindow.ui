@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1080</height>
+    <width>1790</width>
+    <height>1254</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>1911</width>
-      <height>1041</height>
+      <x>30</x>
+      <y>10</y>
+      <width>1741</width>
+      <height>1201</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_camera">
      <attribute name="title">
@@ -284,6 +284,61 @@
        <string>TextLabel</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_batch_size">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>86</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Batch Size:</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_batch_size">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>70</y>
+        <width>111</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcdNumber_train_time">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>830</y>
+        <width>381</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_test">
      <attribute name="title">
@@ -469,7 +524,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1920</width>
+     <width>1790</width>
      <height>22</height>
     </rect>
    </property>

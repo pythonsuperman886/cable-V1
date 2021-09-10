@@ -69,6 +69,13 @@ void Trainer::train() {
             //
             auto real_A = std::get<0>(mini_batch).to(device);
             auto real_B = std::get<1>(mini_batch).to(device);
+
+
+
+            int batch_size_data = real_A.size(0);
+//            cout<<"batch_size_data: "<<batch_size_data<<endl;
+            real_labels = torch::ones({batch_size_data, 1}).to(device);
+            fake_labels = torch::zeros({batch_size_data, 1}).to(device);
             //
 //            tm.reset();
 //            tm.start();
@@ -88,16 +95,23 @@ void Trainer::train() {
             auto fake_AB = torch::cat({real_A, fake_B.detach()}, /*dim=*/1);
 
             auto pred_fake = D->forward(fake_AB.detach());
+//            cout<<"pred_fake output: "<<pred_fake.sizes()<<endl;
 
+            pred_fake = pred_fake.reshape({batch_size_data, -1});
+//            cout<<"pred_fake reshape: "<<pred_fake.sizes()<<endl;
+
+            //    cout<<"d out: "<<out.sizes()<<endl;
             loss_D_fake = criterion_GAN(pred_fake, fake_labels);
-
+//            cout<<"fake_labels size: "<<fake_labels.sizes()<<endl;
 
 
 
             real_AB = torch::cat({real_A, real_B}, /*dim=*/1);
             pred_real = D->forward(real_AB);
+            pred_real = pred_real.reshape({batch_size_data, -1});
 
             loss_D_real = criterion_GAN(pred_real, real_labels);
+
             loss_D = (loss_D_fake + loss_D_real)*0.5;
             loss_D.backward();
             optimizer_D.step();
@@ -113,6 +127,8 @@ void Trainer::train() {
             optimizer_G.zero_grad();
             fake_AB = torch::cat({real_A, fake_B}, /*dim=*/1);
             pred_fake = D->forward(fake_AB);
+            pred_fake = pred_fake.reshape({batch_size_data, -1});
+
             loss_G_GAN = criterion_GAN(pred_fake, real_labels);
             loss_G_L1 = criterion_L1(fake_B, real_B) * lambda_L1;
             loss_G = loss_G_GAN + loss_G_L1;
@@ -138,16 +154,17 @@ void Trainer::train() {
             //            torch::save
 
             ++batch_index;
+//            cout<<"real_A size: "<<real_A.sizes()<<endl;
             Mat A = Tensor2Mat(real_A);
             Mat B = Tensor2Mat(real_B);
             Mat C = Tensor2Mat(fake_B);
-
+            Mat m = Mat(5, A.cols, CV_8UC1, Scalar(255));
             vector<Mat> ouputs={
-                    A,B,C
+                    A,m,B,m,C
             };
 
 
-            hconcat(ouputs,combine);
+            vconcat(ouputs,combine);
             imwrite("../checkpoints/train_results/result-" + std::to_string(epoch) + ".png",combine);
 //            result = denorm(result);
             //            save_image(real_A, sample_output_dir_path + "real_A-" + std::to_string(epoch + 1) + ".png");

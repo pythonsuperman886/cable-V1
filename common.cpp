@@ -59,11 +59,35 @@ Mat Tensor2Mat(const Tensor& tensor){
     int h = tensor.size(2);
     int w = tensor.size(3);
     auto out_tensor = denorm(tensor);
-    out_tensor = out_tensor.mul(255).add(0.5).clamp(0, 255).permute({0,3,1,2}).to(torch::kU8);
+    out_tensor = out_tensor.mul(255).add(0.5).clamp(0, 255).permute({0,2,3,1}).to(torch::kU8);
     out_tensor = out_tensor.to(torch::kCPU);
-    cv::Mat Mat_out(cv::Size(h, w), CV_8U, out_tensor.data_ptr());
-    Mat out = Mat_out.clone();
-    return out;
+    Mat m = Mat(h, 2, CV_8UC1, Scalar(255));
+
+//    cout<<"out size : "<<out_tensor.sizes()<<endl;
+    if(out_tensor.size(0)>1){
+        Mat combine;
+        vector<Mat> out_lists;
+        for(int n=0;n<out_tensor.size(0);n++){
+            auto  out = out_tensor[n];
+
+            cv::Mat Mat_out(cv::Size(h, w), CV_8U, out.data_ptr());
+            out_lists.push_back(Mat_out);
+            out_lists.push_back(m);
+
+            //        tensor_lists.
+
+        }
+        hconcat(out_lists,combine);
+        Mat out = combine.clone();
+        return out;
+    }else{
+        cv::Mat Mat_out(cv::Size(h, w), CV_8U, out_tensor.data_ptr());
+        Mat out = Mat_out.clone();
+        return out;
+//        return out_tensor；
+    }
+//    at::TensorList tensor_lists;
+
 };
 vector<int> Max_deal_pic(const Mat& image)
 {
@@ -144,7 +168,7 @@ vector<int> min_edge_out(const Mat& image)
     GaussianBlur(image,blur,kernel_size,11);
     // 二值化
     Mat binary;
-    cv::threshold(blur, binary, 40, 255, CV_THRESH_BINARY);
+    cv::threshold(blur, binary, 20, 255, CV_THRESH_BINARY);
     // 膨胀
     Mat dilate_element = getStructuringElement(MORPH_RECT,
                                                Size(15, 15));
@@ -241,3 +265,5 @@ void draw_line_diameter(Mat &image, vector<int> nums){
 
 
 }
+
+

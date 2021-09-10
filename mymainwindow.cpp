@@ -7,6 +7,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
         QMainWindow(parent),
         ui(new Ui::MainWindow),
         timer(new QTimer(this)),
+        count_train_timer(new QTimer(this)),
         trainer(new Trainer),
         tester(new Testnet),
         textStream(new QTextStream(stdout)),
@@ -19,7 +20,9 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 //    ui->tabWidget->setStyleSheet("background-color:rgb(46, 52, 54)");
 //    ui->tabWidget->setStyleSheet("background-color:rgb(0,0,0)");
 
-
+    ui->lcdNumber_train_time->setDigitCount(8);
+//    ui->lcdNumber_train_time->setMode(QLCDNumber::Dec);
+    ui->lcdNumber_train_time->setStyleSheet("border: 1px solid green; color: green; background-color:rgb(255,255,250);");
     ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_test_camera_image->setStyleSheet("QLabel{background:#000000;}");
     ui->label_defect_result->setStyleSheet("QLabel{background:#000000;}");
@@ -32,6 +35,11 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     ui->spinBox_blur_num->setValue(1); //设置当前值
     ui->spinBox_blur_num->setSingleStep(2);
     int val_2 = ui->spinBox_blur_num->value(); //获取值
+
+    ui->spinBox_batch_size->setRange(1, 100);//设置范围
+    ui->spinBox_batch_size->setValue(1); //设置当前值
+    ui->spinBox_batch_size->setSingleStep(1);
+//    int val_2 = ui->spinBox_blur_num->value(); //获取值
 //    ui->label_preprocess_blur_value_num->setText(QString::number(val_2));//把获取到的值显示在文本框
 
 //    ui->label_camera_image->setStyleSheet("QLabel{background:#000000;}");
@@ -64,7 +72,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     connect(this,&MyMainWindow::train,this,&MyMainWindow::start_train);
     connect(this,&MyMainWindow::test,this,&MyMainWindow::init_test);
 
-    connect(ui->buttonGroup_blur, SIGNAL(buttonToggled(int, bool)), this, SLOT(on_buttonGroup_blur_toggled(int, bool)));
+    connect(ui->buttonGroup_blur, SIGNAL(buttonToggled(int, bool)), this, SLOT(while_buttonGroup_blur_toggled(int, bool)));
 
 //    connect(this,&MyMainWindow::test,this,&MyMainWindow::init_test);
 
@@ -176,7 +184,7 @@ void MyMainWindow::time_out(){
 
             vector<int> diameter_nums = get_diameter_nums(camera_mat);
             draw_line_diameter(camera_mat_test,diameter_nums);
-            cout<<"num: "<<tester->test_num<<endl;
+//            cout<<"num: "<<tester->test_num<<endl;
             add_defect_num(tester->test_num,defect_rect_lists.size(),diameter_nums);
 //            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
 
@@ -194,7 +202,10 @@ void MyMainWindow::time_out(){
 
             QByteArray t = qfile.readAll();
             ui->textEdit_train_log->append(QString(t));
-            train_result = Mat2QImage(trainer->combine).scaled(width_train_image_label,height_train_image_label);
+            ui->label_train_result->setGeometry(QRect(690, 170, trainer->combine.cols, trainer->combine.rows));
+            train_result = Mat2QImage(trainer->combine);
+//            ui->label_train_result->sewidt
+//            train_result = Mat2QImage(trainer->combine).scaled(width_train_image_label,height_train_image_label);
             ui->label_train_result->setPixmap(QPixmap::fromImage(train_result));
 
 //            cout.
@@ -228,8 +239,8 @@ Rect MyMainWindow::get_rect(int w,int h){
 
 
     Rect rect(x1,0,x2-x1,h);
-    cout<<"x1: "<<x1<<endl;
-    cout<<"x2: "<<x2<<endl;
+//    cout<<"x1: "<<x1<<endl;
+//    cout<<"x2: "<<x2<<endl;
 
     return rect;
 }
@@ -257,7 +268,7 @@ void MyMainWindow::change_save_flag(){
     }
 }
 
-void MyMainWindow::on_buttonGroup_blur_toggled(int id,bool type){
+void MyMainWindow::while_buttonGroup_blur_toggled(int id,bool type){
     preprocess.blur_type = ui->buttonGroup_blur->checkedId();
     cout<<" blur id :"<<ui->buttonGroup_blur->checkedId()<<endl;
 }
@@ -281,7 +292,7 @@ void MyMainWindow::change_train_flag(){
     if(!Is_train){
         Is_train = true;
         qfile.open(QIODevice::ReadOnly | QIODevice::Text);
-
+        on_train_time_clicked();
         ui->pushButton_train_flag->setStyleSheet("background-color:rgb(200,0,0)");
         emit train();
 
@@ -290,6 +301,7 @@ void MyMainWindow::change_train_flag(){
         Is_train = false;
         trainer->stop_train();
         qfile.close();
+        on_train_time_clicked();
         ui->pushButton_train_flag->setStyleSheet("background-color:rgb(0,200,0)");
 
     }
@@ -341,7 +353,7 @@ void MyMainWindow::set_group_id() {
 }
 
 void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diameter_nums) {
-    cout<<"add : "<<num<<endl;
+//    cout<<"add : "<<num<<endl;
     int max_width = -1;
     int min_wdith = -1;
     if(diameter_nums[0]!=-1&&diameter_nums[1]!=-1&&diameter_nums[2]!=-1&&diameter_nums[3]!=-1){
@@ -383,12 +395,58 @@ void MyMainWindow::add_defect_num(int pic_num,int num, const vector<int>& diamet
 
 //    line_chart->r
 //    ui->line_chart_view->setChart(line_chart);
-    cout<<"add end : "<<pic_num<<endl;
+//    cout<<"add end : "<<pic_num<<endl;
 
 //
 //
 
 //    line_chart->createDefaultAxes();
+
+}
+
+void MyMainWindow::on_spinBox_batch_size_valueChanged(int i) {
+    int num = ui->spinBox_batch_size->value();
+    trainer->batch_size=num;
+//    preprocess.set_blur_parameters(num);
+    cout<<"batch size: "<<num<<endl;
+}
+
+void MyMainWindow::while_train_time_out() {
+
+    my_train_time.sec++;
+    if(my_train_time.sec>=60){
+        my_train_time.sec=0;
+        my_train_time.minu++;
+        if(my_train_time.minu>=60){
+            my_train_time.minu=0;
+            my_train_time.hour++;
+        }
+    }
+    QString hour = QString::number(my_train_time.hour);
+    if(hour.length()==1) hour = "0"+hour;
+    QString min = QString::number(my_train_time.minu);
+    if(min.length()==1) min = "0"+min;
+    QString sec = QString::number(my_train_time.sec);
+    if(sec.length()==1) sec = "0"+sec;
+    QString str = hour +":"+min + ":" +sec;
+    ui->lcdNumber_train_time->display(str);
+
+}
+
+void MyMainWindow::on_train_time_clicked() {
+    if(!my_train_time.Is_start){
+        count_train_timer->start(1000);
+        connect(count_train_timer,SIGNAL(timeout()),this,SLOT(while_train_time_out()));
+
+        my_train_time.Is_start = true;
+    }
+    else{
+//        my_train_time.init();
+        count_train_timer->stop();
+        disconnect(count_train_timer,SIGNAL(timeout()),this,SLOT(while_train_time_out()));
+
+        my_train_time.Is_start = false;
+    }
 
 }
 

@@ -18,6 +18,7 @@ public:
     void train();
     void stop_train();
     Mat combine;
+    int64_t batch_size = 1;
 
 private:
     std::ofstream ofs;
@@ -31,7 +32,6 @@ private:
     const size_t num_epochs = 2000;
     const double learning_rate = 0.0002;
     int image_resize_num = 128;
-    const int64_t batch_size = 1;
     bool train_shuffle = true;  // whether to shuffle the training dataset
     size_t train_workers = 4;  //
     int thickiness = -1;

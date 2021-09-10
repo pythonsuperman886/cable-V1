@@ -81,8 +81,8 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
     double ratio_w = double(border_image_to_origin.cols)/double(fake_image.cols);
     double ratio_h = double(border_image_to_origin.rows)/double(fake_image.rows);
 //    double ratio = ratio_w/ratio_h;
-    cout<<"ratio_w: "<<ratio_w<<endl;
-    cout<<"ratio_h: "<<ratio_h<<endl;
+//    cout<<"ratio_w: "<<ratio_w<<endl;
+//    cout<<"ratio_h: "<<ratio_h<<endl;
 //    cout<<"ratio: "<<ratio<<endl;
 //    cout<<"ratio_w: "<<ratio_w<<endl;
 
@@ -140,15 +140,16 @@ Mat Testnet::rectangle_cable_defect(Mat fake_image,const vector<Rect>& lists) {
         rectangle(fake_image,Rect, cv::Scalar(0,0,200),3);
     }
     tm.stop();
-    cout<<"list size: "<<lists.size()<<endl;
-    cout<<"rectangle forward: "<<tm.getTimeMilli()<<endl;
+//    cout<<"list size: "<<lists.size()<<endl;
+//    cout<<"rectangle forward: "<<tm.getTimeMilli()<<endl;
 
     return fake_image;
 
 }
 
 Mat Testnet::Test(const Mat& image,vector<Rect> &lists){
-
+    tm.reset();
+    tm.start();
     Mat resize_image;
     resize(image,resize_image,Size(128,128));
     //    TickMeter tm;
@@ -157,8 +158,7 @@ Mat Testnet::Test(const Mat& image,vector<Rect> &lists){
     Is_save = false;
     Mat out;
     //    for(int i =1;i<15;i++){
-    tm.reset();
-    tm.start();
+
     Tensor input = Mat2Tensor(resize_image);
     input = input.to(device);
 
@@ -167,7 +167,7 @@ Mat Testnet::Test(const Mat& image,vector<Rect> &lists){
     out = Tensor2Mat(fake_B);
     Mat out2origin_size;
     lists = get_defect_rect_list(out,out2origin_size);
-    cout<<"lists size: "<<lists.size()<<endl;
+//    cout<<"lists size: "<<lists.size()<<endl;
 
 //    vector<Mat> rectangle_mat = rectangle_cable_defect(out,resize_image);
     tm.stop();

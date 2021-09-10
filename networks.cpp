@@ -142,7 +142,6 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
 torch::Tensor PatchGAN_DiscriminatorImpl::forward(torch::Tensor x){
 
     torch::Tensor out = this->model->forward(x);
-    out = out.reshape({1, -1});
     // {IC+OC,256,256} ===> {1,30,30}
 //    cout<<"d input: "<<x.sizes()<<endl;
 //    cout<<"d out: "<<out.sizes()<<endl;

@@ -28,7 +28,8 @@ class MyMainWindow:public QMainWindow {
 public:
     explicit MyMainWindow(QWidget *parent = nullptr);
     ~MyMainWindow() override;
-    void time_out();
+
+    void on_train_time_clicked();
     void set_save_path();
     void set_model_path();
     void change_save_flag();
@@ -50,7 +51,7 @@ private:
     QFile qfile;
     QTextStream *textStream;
     Ui::MainWindow * ui;
-    string save_path_image;
+    string save_path_image ="/home/explore/data/2";
     string model_path;
     QTimer *timer;
     Camera camera;
@@ -97,11 +98,17 @@ private:
 
     int width_train_image_label;
     int height_train_image_label;
+    My_Time my_train_time;
+    QTimer *count_train_timer;
     public slots:
     void on_spinBox_defect_threshold_valueChanged(int i);
     void on_spinBox_block_size_valueChanged(int i);
     void on_spinBox_blur_num_valueChanged(int i);
-    void on_buttonGroup_blur_toggled(int id,bool type);
+    void on_spinBox_batch_size_valueChanged(int i);
+    void time_out();
+    void while_train_time_out();
+    void while_buttonGroup_blur_toggled(int id,bool type);
+
 
 
 };
