@@ -118,7 +118,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 //    series_defect->append(QPointF(4,400));
     line_chart->setAxisY(axisY,series_defect);
     line_chart->setAxisX(axisX,series_defect);
-    line_chart->legend()->hide();
+    line_chart->legend()->setAlignment(Qt::AlignTop);
     ui->line_chart_view->setChart(line_chart);
 
 

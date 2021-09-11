@@ -96,7 +96,7 @@ typedef struct mychart{
         line_chart->createDefaultAxes();
         axisX = new QValueAxis;
         axisY = new QValueAxis;
-        axisX->setRange(0,20);
+        axisX->setRange(0,50);
         axisX->setTitleText("epoch");
         axisY->setRange(0,10);
         axisY->setTitleText("loss");
@@ -114,12 +114,14 @@ typedef struct mychart{
         line_chart->setAxisY(axisY,series_d);
         line_chart->setAxisX(axisX,series_g);
         line_chart->setAxisX(axisX,series_d);
-        line_chart->legend()->hide();
+        line_chart->setAnimationOptions(QChart::SeriesAnimations);
+        line_chart->legend()->setVisible(true);
         graphicsView_train_loss->setChart(line_chart);
 
 
-        line_chart->setAnimationOptions(QChart::SeriesAnimations);
-        line_chart->legend()->setVisible(true);
+
+        line_chart->legend()->setAlignment(Qt::AlignTop);
+
         point_g.append(QPointF(0,0));
         point_d.append(QPointF(0,0));
 
@@ -133,8 +135,8 @@ typedef struct mychart{
         line_chart->removeSeries(series_d);
 
 //        model->insertRow(model_count++,list);
-        if(loss_info.epoch>20){
-            axisX->setRange(loss_info.epoch-10,loss_info.epoch+10);
+        if(loss_info.epoch>50){
+            axisX->setRange(loss_info.epoch-20,loss_info.epoch+5);
             point_g.pop_front();
             point_d.pop_front();
         }
@@ -175,9 +177,12 @@ typedef struct my_pie_chart{
     								//每个分区label显示
     QChart *pie_chart;
 
+    QChartView *graphicsView_test_pie_chart;
+    QPieSlice *slice;
 
-
-
+    double sum=0;
+    double good_percent=0;
+    double bad_percent=0;
 
     my_pie_chart(){
 
@@ -185,35 +190,49 @@ typedef struct my_pie_chart{
 
     void init(QChartView *graphicsView_pie_chart){
         series = new QPieSeries();
-        series->append("合格", 0.8)->setColor(QColor(0, 200, 200));	// 构造两个饼状分区
-        series->append("不合格", 0.2)->setColor(QColor(200, 150, 0));//设置每个分区的占比与颜色
-        series->setLabelsVisible();									//每个分区label显示
+        series->append("合格", 0.1)->setColor(QColor(0, 200, 0));	// 构造两个饼状分区
+        series->append("不合格", 0.0)->setColor(QColor(200, 0, 0));//设置每个分区的占比与颜色
+        series->setLabelsVisible();
+        series->setHoleSize(0.25);//每个分区label显示
         pie_chart = new QChart();
         pie_chart->addSeries(series);
-        pie_chart->setTitle("Defect%");
-        pie_chart->legend()->hide();									//是否显示图例
-        pie_chart->setAnimationOptions(QChart::AllAnimations); // 设置显示时的动画效果
-        pie_chart->setTheme(QChart::ChartThemeBlueIcy);
+        pie_chart->setTitle("Defect Pie");
+        pie_chart->legend()->setAlignment(Qt::AlignBottom);
+        series->setPieSize(0.5);
+        //是否显示图例
+//        pie_chart->setAnimationOptions(QChart::AllAnimations); // 设置显示时的动画效果
+        pie_chart->setTheme(QChart::ChartThemeBlueCerulean);
         series->setUseOpenGL(true);
-
+//        series->setLabelsVisible();
+//        chart->legend()->hide();
 //        QChartView *chartView;										//构造图表视图
 //        chartView = new QChartView(pie_chart);
         graphicsView_pie_chart->setChart(pie_chart);
 
         graphicsView_pie_chart->setRenderHint(QPainter::Antialiasing); //抗锯齿处理
         //chartView->chart()->setTheme(QChart::ChartThemeBlueCerulean);
-
+        graphicsView_test_pie_chart = graphicsView_pie_chart;
     }
 
     void add_pie_info(double good,double bad) {
         pie_chart->removeSeries(series);
 
         series->clear();
+//        series->setUseOpenGL(true);
+        sum = good+bad;
+        good_percent = (good/sum)*100;
+        bad_percent = (bad/sum)*100;
+        series->append("good  "+QString::number(good_percent,'f',1)+"%", good)->setColor(QColor(0, 200, 0));	// 构造两个饼状分区
+//        series->append("不合格", bad)->setColor(QColor(200, 0, 0));//设置每个分区的占比与颜色
 
-        series->append("合格", good)->setColor(QColor(0, 200, 0));	// 构造两个饼状分区
-        series->append("不合格", bad)->setColor(QColor(200, 0, 0));//设置每个分区的占比与颜色
+        slice = series->append("bad"+QString::number(bad_percent,'f',1)+"%", bad);//增加一个分块，占比30%，并实例化一个QPieSlice指向该分块
+        slice->setExploded(true);//让该弧形块与主圆环分开
+        slice->setLabelVisible(true);//显示该弧形块的标签
+        slice->setColor(QColor(200,0,0));
+//        series->setLabelsVisible();
 
         pie_chart->addSeries(series);
+//        graphicsView_test_pie_chart->setChart(pie_chart);
     }
 
 }My_test_pie_chart;

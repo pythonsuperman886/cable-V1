@@ -82,12 +82,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1790, 1254);
+        MainWindow->resize(1874, 1315);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(30, 10, 1741, 1201));
+        tabWidget->setGeometry(QRect(30, 10, 1811, 1251));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new MyLabel(tab_camera);
@@ -272,18 +272,18 @@ public:
         spinBox_block_size->setFont(font4);
         line_chart_view = new QChartView(tab_test);
         line_chart_view->setObjectName(QStringLiteral("line_chart_view"));
-        line_chart_view->setGeometry(QRect(15, 581, 871, 411));
+        line_chart_view->setGeometry(QRect(15, 581, 871, 511));
         tableView_all_info = new QTableView(tab_test);
         tableView_all_info->setObjectName(QStringLiteral("tableView_all_info"));
-        tableView_all_info->setGeometry(QRect(900, 580, 401, 411));
+        tableView_all_info->setGeometry(QRect(900, 580, 401, 511));
         graphicsView_pie_chart = new QChartView(tab_test);
         graphicsView_pie_chart->setObjectName(QStringLiteral("graphicsView_pie_chart"));
-        graphicsView_pie_chart->setGeometry(QRect(1310, 580, 421, 411));
+        graphicsView_pie_chart->setGeometry(QRect(1310, 580, 481, 511));
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1790, 22));
+        menubar->setGeometry(QRect(0, 0, 1874, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
