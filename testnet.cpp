@@ -78,8 +78,8 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
 
     vector<Rect> rect_lists;
 
-    double ratio_w = double(border_image_to_origin.cols)/double(fake_image.cols);
-    double ratio_h = double(border_image_to_origin.rows)/double(fake_image.rows);
+    double ratio_w =1;//double(border_image_to_origin.cols)/double(fake_image.cols);
+    double ratio_h =1;// double(border_image_to_origin.rows)/double(fake_image.rows);
 //    double ratio = ratio_w/ratio_h;
 //    cout<<"ratio_w: "<<ratio_w<<endl;
 //    cout<<"ratio_h: "<<ratio_h<<endl;
@@ -89,7 +89,7 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
 //    cvtColor(rectangle_image_real,rectangle_image_real,CV_GRAY2BGR);
 //    cvtColor(rectangle_image_fake,rectangle_image_fake,CV_GRAY2BGR);
     int nccomps = cv::connectedComponentsWithStats (
-            fake_image, labels,
+            border_image_to_origin, labels,
             stats, centroids
             );
 

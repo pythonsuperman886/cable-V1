@@ -106,11 +106,13 @@ private:
 
     int good_num = 0;
     int bad_num = 0;
+    int diameter_threshold=25;
     public slots:
     void on_spinBox_defect_threshold_valueChanged(int i);
     void on_spinBox_block_size_valueChanged(int i);
     void on_spinBox_blur_num_valueChanged(int i);
     void on_spinBox_batch_size_valueChanged(int i);
+    void on_spinBox_diameter_threshold_valueChanged(int i);
     void time_out();
     void while_train_time_out();
     void while_buttonGroup_blur_toggled(int id,bool type);

@@ -23,7 +23,7 @@ QImage Mat2QImage( const cv::Mat& InputMat)
 
     // construct the QImage using the data of the mat, while do not copy the data
 
-    QImage Result = QImage((const uchar*)(TmpMat.data), TmpMat.cols, TmpMat.rows,
+    QImage Result = QImage((const uchar*)(TmpMat.data), TmpMat.cols, TmpMat.rows,TmpMat.cols*TmpMat.channels(),
 
                            QImage::Format_RGB888);
 
@@ -89,7 +89,7 @@ Mat Tensor2Mat(const Tensor& tensor){
 //    at::TensorList tensor_lists;
 
 };
-vector<int> Max_deal_pic(const Mat& image)
+vector<int> Max_deal_pic(const Mat& image,int threshold)
 {
     //    string path = "/home/explore/data/28/18149.png";
 //    Mat image = imread(path);
@@ -102,7 +102,7 @@ vector<int> Max_deal_pic(const Mat& image)
     GaussianBlur(image,blur,kernel_size,19);
     // 二值化
     Mat binary;
-    cv::threshold(blur, binary, 30, 255, CV_THRESH_BINARY);
+    cv::threshold(blur, binary, threshold, 255, CV_THRESH_BINARY);
     // 查找图片边缘
     Canny(binary,binary,150,255);
     // 闭运算
@@ -155,7 +155,7 @@ vector<int> Max_deal_pic(const Mat& image)
 
 }
 
-vector<int> min_edge_out(const Mat& image)
+vector<int> min_edge_out(const Mat& image,int threshold)
 {
     //    string path = "/home/explore/data/28/18149.png";
 //    Mat image = imread(path);
@@ -168,7 +168,7 @@ vector<int> min_edge_out(const Mat& image)
     GaussianBlur(image,blur,kernel_size,11);
     // 二值化
     Mat binary;
-    cv::threshold(blur, binary, 20, 255, CV_THRESH_BINARY);
+    cv::threshold(blur, binary, threshold, 255, CV_THRESH_BINARY);
     // 膨胀
     Mat dilate_element = getStructuringElement(MORPH_RECT,
                                                Size(15, 15));
@@ -241,12 +241,12 @@ vector<int> min_edge_out(const Mat& image)
 
 }
 
-vector<int> get_diameter_nums(const Mat& image)
+vector<int> get_diameter_nums(const Mat& image,int threshold)
 {
 
     // 定义四个大小的vector存放四个极值的横坐标
-    vector<int> x_max = Max_deal_pic(image);
-    vector<int> x_min = min_edge_out(image);
+    vector<int> x_max = Max_deal_pic(image,threshold);
+    vector<int> x_min = min_edge_out(image,threshold);
     // 将最小值坐标插入到最大值坐标的容器之后
     // 前两个是最大值左右边缘横坐标
     // 后两个是最小值左右边缘横坐标

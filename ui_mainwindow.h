@@ -74,6 +74,8 @@ public:
     QChartView *line_chart_view;
     QTableView *tableView_all_info;
     QChartView *graphicsView_pie_chart;
+    QLabel *label_Diameter_threshold;
+    QSpinBox *spinBox_diameter_threshold;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QButtonGroup *buttonGroup_blur;
@@ -279,6 +281,14 @@ public:
         graphicsView_pie_chart = new QChartView(tab_test);
         graphicsView_pie_chart->setObjectName(QStringLiteral("graphicsView_pie_chart"));
         graphicsView_pie_chart->setGeometry(QRect(1310, 580, 481, 511));
+        label_Diameter_threshold = new QLabel(tab_test);
+        label_Diameter_threshold->setObjectName(QStringLiteral("label_Diameter_threshold"));
+        label_Diameter_threshold->setGeometry(QRect(1200, 20, 211, 31));
+        label_Diameter_threshold->setFont(font6);
+        spinBox_diameter_threshold = new QSpinBox(tab_test);
+        spinBox_diameter_threshold->setObjectName(QStringLiteral("spinBox_diameter_threshold"));
+        spinBox_diameter_threshold->setGeometry(QRect(1410, 10, 101, 51));
+        spinBox_diameter_threshold->setFont(font6);
         tabWidget->addTab(tab_test, QString());
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -320,6 +330,7 @@ public:
         label_defect_result->setText(QApplication::translate("MainWindow", "defect image", Q_NULLPTR));
         label_defect_threshold->setText(QApplication::translate("MainWindow", "Defect Threshold:", Q_NULLPTR));
         label_block_size->setText(QApplication::translate("MainWindow", "Block Size:", Q_NULLPTR));
+        label_Diameter_threshold->setText(QApplication::translate("MainWindow", "Diameter Threshold: ", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "Test", Q_NULLPTR));
     } // retranslateUi
 

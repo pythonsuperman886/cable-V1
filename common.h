@@ -43,9 +43,9 @@ QImage Mat2QImage( const cv::Mat& InputMat);
 at::Tensor Mat2Tensor(Mat camera_frame);
 at::Tensor denorm(const torch::Tensor& tensor);
 Mat Tensor2Mat(const at::Tensor& tensor);
-vector<int> min_edge_out(const Mat& image);
-vector<int> Max_deal_pic(const Mat& image);
-vector<int> get_diameter_nums(const Mat& image);
+vector<int> min_edge_out(const Mat& image,int threshold);
+vector<int> Max_deal_pic(const Mat& image,int threshold);
+vector<int> get_diameter_nums(const Mat& image,int threshold);
 void draw_line_diameter(Mat &image, vector<int> nums);
 typedef struct mytime{
     int hour=0;
@@ -96,7 +96,7 @@ typedef struct mychart{
         line_chart->createDefaultAxes();
         axisX = new QValueAxis;
         axisY = new QValueAxis;
-        axisX->setRange(0,50);
+        axisX->setRange(0,200);
         axisX->setTitleText("epoch");
         axisY->setRange(0,10);
         axisY->setTitleText("loss");
@@ -135,7 +135,7 @@ typedef struct mychart{
         line_chart->removeSeries(series_d);
 
 //        model->insertRow(model_count++,list);
-        if(loss_info.epoch>50){
+        if(loss_info.epoch>500){
             axisX->setRange(loss_info.epoch-20,loss_info.epoch+5);
             point_g.pop_front();
             point_d.pop_front();

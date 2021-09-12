@@ -30,7 +30,7 @@ private:
     const std::string sample_output_dir_path = "../output/";
     string input_dir;
     size_t epoch = 0;
-    const size_t num_epochs = 2000;
+    const size_t num_epochs = 200;
     const double learning_rate = 0.0002;
     int image_resize_num = 128;
     bool train_shuffle = true;  // whether to shuffle the training dataset

@@ -41,6 +41,10 @@ MyMainWindow::MyMainWindow(QWidget *parent):
     ui->spinBox_batch_size->setRange(1, 100);//设置范围
     ui->spinBox_batch_size->setValue(1); //设置当前值
     ui->spinBox_batch_size->setSingleStep(1);
+
+    ui->spinBox_diameter_threshold->setRange(1, 250);//设置范围
+    ui->spinBox_diameter_threshold->setValue(25); //设置当前值
+    ui->spinBox_diameter_threshold->setSingleStep(1);
 //    int val_2 = ui->spinBox_blur_num->value(); //获取值
 //    ui->label_preprocess_blur_value_num->setText(QString::number(val_2));//把获取到的值显示在文本框
 
@@ -184,16 +188,23 @@ void MyMainWindow::time_out(){
             camera_mat_test = tester->rectangle_cable_defect(camera_mat_test,defect_rect_lists);
             net_out = tester->rectangle_cable_defect(net_out,defect_rect_lists);
 
-            vector<int> diameter_nums = get_diameter_nums(camera_mat);
+            vector<int> diameter_nums = get_diameter_nums(camera_mat,diameter_threshold);
             draw_line_diameter(camera_mat_test,diameter_nums);
 //            cout<<"num: "<<tester->test_num<<endl;
             add_defect_num(tester->test_num,defect_rect_lists.size(),diameter_nums);
 //            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
 
 
+            if(!defect_rect_lists.empty()){
+                imwrite("../checkpoints/test_results/i"+to_string(tester->test_num)+".png",camera_mat_test.clone());
+            }
+    //
 
+    //    }
 
-            defect_qt = Mat2QImage(net_out).scaled(width_defect_label,height_defect_label);
+            defect_qt = Mat2QImage(net_out);
+//            defect_qt.save(QString("../checkpoints/test_results/%1.png").arg(tester->test_num));
+            defect_qt =  defect_qt.scaled(width_defect_label,height_defect_label);
             ui->label_defect_result->setPixmap(QPixmap::fromImage(defect_qt));
 
             test_camera_qt = Mat2QImage(camera_mat_test).scaled(width_test_image_label,height_test_image_label);
@@ -459,5 +470,12 @@ void MyMainWindow::on_train_time_clicked() {
         my_train_time.Is_start = false;
     }
 
+}
+
+void MyMainWindow::on_spinBox_diameter_threshold_valueChanged(int i) {
+    int num = ui->spinBox_diameter_threshold->value();
+    diameter_threshold=num;
+    //    preprocess.set_blur_parameters(num);
+    cout<<"diameter_threshold: "<<num<<endl;
 }
 

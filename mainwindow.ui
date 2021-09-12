@@ -536,6 +536,43 @@
        </rect>
       </property>
      </widget>
+     <widget class="QLabel" name="label_Diameter_threshold">
+      <property name="geometry">
+       <rect>
+        <x>1200</x>
+        <y>20</y>
+        <width>211</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Diameter Threshold: </string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_diameter_threshold">
+      <property name="geometry">
+       <rect>
+        <x>1410</x>
+        <y>10</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
