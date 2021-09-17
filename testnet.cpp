@@ -133,13 +133,13 @@ Mat Testnet::rectangle_cable_defect(Mat fake_image,const vector<Rect>& lists) {
         cvtColor(fake_image,fake_image,CV_GRAY2BGR);
 
     }
-    tm.reset();
-    tm.start();
+//    tm.reset();
+//    tm.start();
 
     for(const auto& Rect:lists){
         rectangle(fake_image,Rect, cv::Scalar(0,0,200),3);
     }
-    tm.stop();
+//    tm.stop();
 //    cout<<"list size: "<<lists.size()<<endl;
 //    cout<<"rectangle forward: "<<tm.getTimeMilli()<<endl;
 

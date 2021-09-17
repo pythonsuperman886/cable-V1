@@ -18,6 +18,7 @@
 #include <QtCharts>
 #include <QTableView>
 #include <QStandardItemModel>
+#include "mydatabase.h"
 
 namespace Ui {
     class MainWindow;
@@ -57,7 +58,7 @@ private:
     Camera camera;
     Trainer *trainer;
     Testnet * tester;
-
+    MyDatabase Database;
     Preprocess preprocess;
     Mat preprocess_mat;
     QImage preprocess_qt;

@@ -32,6 +32,7 @@ UNet_GeneratorImpl::UNet_GeneratorImpl(size_t input_nc,size_t output_nc,size_t N
     
     this->model->push_back(blocks);
     register_module("U-Net", this->model);
+    this->model->apply(weights_init);
 
 }
 
@@ -132,6 +133,7 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
 //    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
 
     register_module("PatchGAN", this->model);
+    this->model->apply(weights_init);
 
 }
 
@@ -157,15 +159,18 @@ void weights_init(nn::Module &m){
         auto p = m.named_parameters(false);
         auto w = p.find("weight");
         auto b = p.find("bias");
-        if (w != nullptr) nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
-        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+//        if (w != nullptr) nn::init::kaiming_normal_(*w);//nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
+//        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+        cout<<"intit weight: "<<"conv2d"<<endl;
     }
     else if ((typeid(m) == typeid(nn::BatchNorm2d)) || (typeid(m) == typeid(nn::BatchNorm2dImpl))){
         auto p = m.named_parameters(false);
         auto w = p.find("weight");
         auto b = p.find("bias");
-        if (w != nullptr) nn::init::normal_(*w, /*mean=*/1.0, /*std=*/0.02);
-        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+//        if (w != nullptr) nn::init::normal_(*w, /*mean=*/1.0, /*std=*/0.02);
+//        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+        cout<<"intit weight: "<<"BatchNorm2d"<<endl;
+
     }
     return;
 }

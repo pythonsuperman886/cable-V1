@@ -193,18 +193,19 @@ void MyMainWindow::time_out(){
 //            cout<<"num: "<<tester->test_num<<endl;
             add_defect_num(tester->test_num,defect_rect_lists.size(),diameter_nums);
 //            vector<Mat> real_defect_rectangle_image = tester->Test(re_rect_mat);
-
-
+            Database.Insert_data(tester->test_num,defect_rect_lists.size(),diameter_nums);
             if(!defect_rect_lists.empty()){
-                imwrite("../checkpoints/test_results/i"+to_string(tester->test_num)+".png",camera_mat_test.clone());
+                imwrite("../checkpoints/test_results/"+to_string(tester->test_num)+".png",camera_mat_test.clone());
+                Database.query_all();
+
             }
     //
 
     //    }
 
-            defect_qt = Mat2QImage(net_out);
+            defect_qt = Mat2QImage(net_out).scaled(width_defect_label,height_defect_label);
 //            defect_qt.save(QString("../checkpoints/test_results/%1.png").arg(tester->test_num));
-            defect_qt =  defect_qt.scaled(width_defect_label,height_defect_label);
+//            defect_qt =  defect_qt.scaled(width_defect_label,height_defect_label);
             ui->label_defect_result->setPixmap(QPixmap::fromImage(defect_qt));
 
             test_camera_qt = Mat2QImage(camera_mat_test).scaled(width_test_image_label,height_test_image_label);

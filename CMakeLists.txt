@@ -26,7 +26,7 @@ FIND_PACKAGE(Qt5Sql REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 FIND_PACKAGE(Qt5Concurrent REQUIRED)
 FIND_PACKAGE(Qt5Charts REQUIRED)
-
+FIND_PACKAGE(Qt5Sql REQUIRED)
 find_package(OpenMP REQUIRED)
 
 
@@ -51,7 +51,7 @@ aux_source_directory(. DIR_SRCS)
 add_executable(main ${DIR_SRCS} )
 #add_executable(main main.cpp)
 #target_link_libraries(main python3.6m pthread )
-target_link_libraries(main boost_filesystem "${Boost_LIBRARIES}" "${TORCH_LIBRARIES}" "${OpenCV_LIBS}" Qt5::Widgets Qt5::Charts "${QT_LIBS}" MvCameraControl  OpenMP::OpenMP_CXX  )
+target_link_libraries(main boost_filesystem "${Boost_LIBRARIES}" "${TORCH_LIBRARIES}" "${OpenCV_LIBS}" Qt5::Widgets Qt5::Charts  Qt5::Sql "${QT_LIBS}" MvCameraControl  OpenMP::OpenMP_CXX sqlite3 )
 set_property(TARGET main PROPERTY CXX_STANDARD 17)
 
 message("${Torch_INCLUDE_DIRS}")
