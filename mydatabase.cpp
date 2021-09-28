@@ -25,15 +25,15 @@ MyDatabase::MyDatabase(){
     else
         qDebug() << "Table created!";
 
-
-    if(!sql_query.exec("INSERT INTO cable_defect_info VALUES(1, 2, 3,4)"))
-    {
-        qDebug() << sql_query.lastError();
-    }
-    else
-    {
-        qDebug() << "inserted Li!";
-    }
+//
+//    if(!sql_query.exec("INSERT INTO cable_defect_info VALUES(1, 2, 3,4)"))
+//    {
+//        qDebug() << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "inserted Li!";
+//    }
 
 }
 

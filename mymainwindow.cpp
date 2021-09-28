@@ -87,7 +87,7 @@ MyMainWindow::MyMainWindow(QWidget *parent):
 //    connect(ui->spinBox_defect_threshold, SIGNAL(valueChanged(int)),this,SLOT(change_defect_threshold(int)));
     ui->spinBox_defect_threshold->setMaximum(1640);
 
-    ui->spinBox_defect_threshold->setValue(30);
+    ui->spinBox_defect_threshold->setValue(300);
     ui->spinBox_block_size->setValue(31);
     ui->spinBox_block_size->setSingleStep(2);
     ui->spinBox_block_size->setRange(3,127);
@@ -196,7 +196,7 @@ void MyMainWindow::time_out(){
             Database.Insert_data(tester->test_num,defect_rect_lists.size(),diameter_nums);
             if(!defect_rect_lists.empty()){
                 imwrite("../checkpoints/test_results/"+to_string(tester->test_num)+".png",camera_mat_test.clone());
-                Database.query_all();
+//                Database.query_all();
 
             }
     //
@@ -216,7 +216,7 @@ void MyMainWindow::time_out(){
 
             QByteArray t = qfile.readAll();
             ui->textEdit_train_log->append(QString(t));
-            ui->label_train_result->setGeometry(QRect(690, 50, trainer->combine.cols, trainer->combine.rows));
+            ui->label_train_result->setGeometry(QRect(690, 160, trainer->combine.cols, trainer->combine.rows));
             train_result = Mat2QImage(trainer->combine);
 //            ui->label_train_result->sewidt
 //            train_result = Mat2QImage(trainer->combine).scaled(width_train_image_label,height_train_image_label);

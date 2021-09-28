@@ -17,7 +17,7 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>10</y>
       <width>1811</width>
       <height>1251</height>
@@ -266,8 +266,8 @@
        <rect>
         <x>50</x>
         <y>160</y>
-        <width>611</width>
-        <height>661</height>
+        <width>621</width>
+        <height>931</height>
        </rect>
       </property>
      </widget>
@@ -275,9 +275,9 @@
       <property name="geometry">
        <rect>
         <x>690</x>
-        <y>30</y>
-        <width>581</width>
-        <height>241</height>
+        <y>170</y>
+        <width>1061</width>
+        <height>391</height>
        </rect>
       </property>
       <property name="text">
@@ -324,8 +324,8 @@
      <widget class="QLCDNumber" name="lcdNumber_train_time">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>830</y>
+        <x>290</x>
+        <y>1110</y>
         <width>381</width>
         <height>101</height>
        </rect>
@@ -343,9 +343,9 @@
       <property name="geometry">
        <rect>
         <x>690</x>
-        <y>510</y>
-        <width>1031</width>
-        <height>641</height>
+        <y>600</y>
+        <width>1101</width>
+        <height>611</height>
        </rect>
       </property>
      </widget>
@@ -510,8 +510,8 @@
       <property name="geometry">
        <rect>
         <x>15</x>
-        <y>581</y>
-        <width>871</width>
+        <y>591</y>
+        <width>1231</width>
         <height>511</height>
        </rect>
       </property>
@@ -519,18 +519,18 @@
      <widget class="QTableView" name="tableView_all_info">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>580</y>
-        <width>401</width>
-        <height>511</height>
+        <x>1360</x>
+        <y>110</y>
+        <width>411</width>
+        <height>471</height>
        </rect>
       </property>
      </widget>
      <widget class="QChartView" name="graphicsView_pie_chart">
       <property name="geometry">
        <rect>
-        <x>1310</x>
-        <y>580</y>
+        <x>1290</x>
+        <y>590</y>
         <width>481</width>
         <height>511</height>
        </rect>

@@ -102,7 +102,7 @@ typedef struct mychart{
         axisY->setTitleText("loss");
 
         //    axisX->setTickCount(100);
-        axisY->setTickCount(20);
+        axisY->setTickCount(10);
         axisX->setTickCount(20);
         //    line_chart->addAxis(axisX,Qt::AlignBottom);
 

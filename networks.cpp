@@ -32,7 +32,7 @@ UNet_GeneratorImpl::UNet_GeneratorImpl(size_t input_nc,size_t output_nc,size_t N
     
     this->model->push_back(blocks);
     register_module("U-Net", this->model);
-    this->model->apply(weights_init);
+//    this->model->apply(weights_init);
 
 }
 
@@ -79,6 +79,7 @@ UNetBlockImpl::UNetBlockImpl(const std::pair<size_t, size_t> outside_nc, const s
     }
     register_module("U-Net_Block", this->model);
 
+
 }
 
 
@@ -113,7 +114,7 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
 
     size_t mul = 1;
     size_t mul_pre = 1;
-    size_t n_layers = 5;
+    size_t n_layers = 3;
     this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc*2, feature, 4).stride(2).padding(1).bias(true)));  // {IC+OC,256,256} ===> {F,128,128}
     this->model->push_back(nn::LeakyReLU(nn::LeakyReLUOptions().negative_slope(0.2).inplace(true)));
     for (size_t n = 1; n < n_layers; n++){  // {F,128,128} ===> {4F,32,32}
@@ -129,11 +130,11 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
     this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul_pre, feature*mul, 4).stride(1).padding(1).bias(false)));  // {4F,32,32} ===> {8F,31,31}
     this->model->push_back(nn::BatchNorm2d(feature*mul));
     this->model->push_back(nn::LeakyReLU(nn::LeakyReLUOptions().negative_slope(0.2).inplace(true)));
-    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 5).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
 //    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
 
     register_module("PatchGAN", this->model);
-    this->model->apply(weights_init);
+//    this->model->apply(weights_init);
 
 }
 
@@ -144,6 +145,7 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
 torch::Tensor PatchGAN_DiscriminatorImpl::forward(torch::Tensor x){
 
     torch::Tensor out = this->model->forward(x);
+//    cout<<"out size:"<<out.sizes()<<endl;
     // {IC+OC,256,256} ===> {1,30,30}
 //    cout<<"d input: "<<x.sizes()<<endl;
 //    cout<<"d out: "<<out.sizes()<<endl;
@@ -159,17 +161,17 @@ void weights_init(nn::Module &m){
         auto p = m.named_parameters(false);
         auto w = p.find("weight");
         auto b = p.find("bias");
-//        if (w != nullptr) nn::init::kaiming_normal_(*w);//nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
-//        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
-        cout<<"intit weight: "<<"conv2d"<<endl;
+        if (w != nullptr) nn::init::normal_(*w),0.0,0.02;//nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
+        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+//        cout<<"intit weight: "<<"conv2d"<<endl;
     }
     else if ((typeid(m) == typeid(nn::BatchNorm2d)) || (typeid(m) == typeid(nn::BatchNorm2dImpl))){
         auto p = m.named_parameters(false);
         auto w = p.find("weight");
         auto b = p.find("bias");
-//        if (w != nullptr) nn::init::normal_(*w, /*mean=*/1.0, /*std=*/0.02);
-//        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
-        cout<<"intit weight: "<<"BatchNorm2d"<<endl;
+        if (w != nullptr) nn::init::normal_(*w, /*mean=*/1.0, /*std=*/0.02);
+        if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
+//        cout<<"intit weight: "<<"BatchNorm2d"<<endl;
 
     }
     return;

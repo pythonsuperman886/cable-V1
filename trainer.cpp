@@ -61,6 +61,11 @@ void Trainer::train() {
         size_t batch_index = 0;
         auto real_labels = torch::ones({batch_size, 1}).to(device);
         auto fake_labels = torch::zeros({batch_size, 1}).to(device);
+
+
+        G->train();
+        D->train();
+
         while (dataloader(mini_batch)){
             QCoreApplication::processEvents();
 
@@ -73,46 +78,64 @@ void Trainer::train() {
 
 
             int batch_size_data = real_A.size(0);
-//            cout<<"batch_size_data: "<<batch_size_data<<endl;
-            real_labels = torch::ones({batch_size_data, 1}).to(device);
-            fake_labels = torch::zeros({batch_size_data, 1}).to(device);
-            //
-//            tm.reset();
-//            tm.start();
+
 
             auto fake_B = G->forward(real_A);
 
-//            tm.stop();
-
-//            cout<<"time forward: "<<tm.getTimeMilli()<<endl;
-//
-            for(auto &i:D->parameters()){
-                i.set_requires_grad(true);
-            }
-
-            optimizer_D.zero_grad();
-
             auto fake_AB = torch::cat({real_A, fake_B.detach()}, /*dim=*/1);
-
+//            cout<<"fake_ab: "<<fake_AB.sizes()<<endl;
             auto pred_fake = D->forward(fake_AB.detach());
-//            cout<<"pred_fake output: "<<pred_fake.sizes()<<endl;
+            //            cout<<"pred_fake output: "<<pred_fake.sizes()<<endl;
 
-            pred_fake = pred_fake.reshape({batch_size_data, -1});
-//            cout<<"pred_fake reshape: "<<pred_fake.sizes()<<endl;
 
-            //    cout<<"d out: "<<out.sizes()<<endl;
-            loss_D_fake = criterion_GAN(pred_fake, fake_labels);
-//            cout<<"fake_labels size: "<<fake_labels.sizes()<<endl;
-
+            auto label_real = torch::full({pred_fake.size(0), pred_fake.size(1), pred_fake.size(2), pred_fake.size(3)}, /*value*/1.0, torch::TensorOptions().dtype(torch::kFloat)).to(device);
+            auto label_fake = torch::full({pred_fake.size(0), pred_fake.size(1), pred_fake.size(2), pred_fake.size(3)}, /*value*/0.0, torch::TensorOptions().dtype(torch::kFloat)).to(device);
 
 
             real_AB = torch::cat({real_A, real_B}, /*dim=*/1);
             pred_real = D->forward(real_AB);
-            pred_real = pred_real.reshape({batch_size_data, -1});
 
-            loss_D_real = criterion_GAN(pred_real, real_labels);
+//            pred_real = pred_real.reshape({batch_size_data, -1});
+
+            loss_D_real = criterion_GAN(pred_real, label_real);
+
+            loss_D_fake = criterion_GAN(pred_fake, label_fake);
+
+
+//            pred_fake = pred_fake.reshape({batch_size_data, -1});
+            //            cout<<"pred_fake reshape: "<<pred_fake.sizes()<<endl;
+
+            //    cout<<"d out: "<<out.sizes()<<endl;
+
+
+//            cout<<"batch_size_data: "<<batch_size_data<<endl;
+//            real_labels = torch::ones({batch_size_data, 1}).to(device);
+//            fake_labels = torch::zeros({batch_size_data, 1}).to(device);
+            //
+//            tm.reset();
+//            tm.start();
+
+
+//            tm.stop();
+
+//            cout<<"time forward: "<<tm.getTimeMilli()<<endl;
+////
+//            for(auto &i:D->parameters()){
+//                i.set_requires_grad(true);
+//            }
+
+
+
+
+
+//            cout<<"fake_labels size: "<<fake_labels.sizes()<<endl;
+
+
+
+
 
             loss_D = (loss_D_fake + loss_D_real)*0.5;
+            optimizer_D.zero_grad();
             loss_D.backward();
             optimizer_D.step();
 
@@ -121,15 +144,15 @@ void Trainer::train() {
             //            for(auto param:D->parameters()){
             //                param.requirs_grad = false;
             //            }
-            for(auto &i:D->parameters()){
-                i.set_requires_grad(false);
-            }
+//            for(auto &i:D->parameters()){
+//                i.set_requires_grad(false);
+//            }
             optimizer_G.zero_grad();
             fake_AB = torch::cat({real_A, fake_B}, /*dim=*/1);
             pred_fake = D->forward(fake_AB);
-            pred_fake = pred_fake.reshape({batch_size_data, -1});
+//            pred_fake = pred_fake.reshape({batch_size_data, -1});
 
-            loss_G_GAN = criterion_GAN(pred_fake, real_labels);
+            loss_G_GAN = criterion_GAN(pred_fake, label_real);
             loss_G_L1 = criterion_L1(fake_B, real_B) * lambda_L1;
             loss_G = loss_G_GAN + loss_G_L1;
             loss_G.backward();

@@ -89,7 +89,7 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(30, 10, 1811, 1251));
+        tabWidget->setGeometry(QRect(20, 10, 1811, 1251));
         tab_camera = new QWidget();
         tab_camera->setObjectName(QStringLiteral("tab_camera"));
         label_camera_image = new MyLabel(tab_camera);
@@ -194,10 +194,10 @@ public:
         pushButton_train_flag->setFont(font);
         textEdit_train_log = new QTextEdit(tab_train);
         textEdit_train_log->setObjectName(QStringLiteral("textEdit_train_log"));
-        textEdit_train_log->setGeometry(QRect(50, 160, 611, 661));
+        textEdit_train_log->setGeometry(QRect(50, 160, 621, 931));
         label_train_result = new QLabel(tab_train);
         label_train_result->setObjectName(QStringLiteral("label_train_result"));
-        label_train_result->setGeometry(QRect(690, 30, 581, 241));
+        label_train_result->setGeometry(QRect(690, 170, 1061, 391));
         label_batch_size = new QLabel(tab_train);
         label_batch_size->setObjectName(QStringLiteral("label_batch_size"));
         label_batch_size->setGeometry(QRect(260, 86, 131, 31));
@@ -216,7 +216,7 @@ public:
         spinBox_batch_size->setFont(font6);
         lcdNumber_train_time = new QLCDNumber(tab_train);
         lcdNumber_train_time->setObjectName(QStringLiteral("lcdNumber_train_time"));
-        lcdNumber_train_time->setGeometry(QRect(270, 830, 381, 101));
+        lcdNumber_train_time->setGeometry(QRect(290, 1110, 381, 101));
         QFont font7;
         font7.setPointSize(20);
         font7.setBold(false);
@@ -225,7 +225,7 @@ public:
         lcdNumber_train_time->setFont(font7);
         graphicsView_train_loss = new QChartView(tab_train);
         graphicsView_train_loss->setObjectName(QStringLiteral("graphicsView_train_loss"));
-        graphicsView_train_loss->setGeometry(QRect(690, 510, 1031, 641));
+        graphicsView_train_loss->setGeometry(QRect(690, 600, 1101, 611));
         tabWidget->addTab(tab_train, QString());
         tab_test = new QWidget();
         tab_test->setObjectName(QStringLiteral("tab_test"));
@@ -274,13 +274,13 @@ public:
         spinBox_block_size->setFont(font4);
         line_chart_view = new QChartView(tab_test);
         line_chart_view->setObjectName(QStringLiteral("line_chart_view"));
-        line_chart_view->setGeometry(QRect(15, 581, 871, 511));
+        line_chart_view->setGeometry(QRect(15, 591, 1231, 511));
         tableView_all_info = new QTableView(tab_test);
         tableView_all_info->setObjectName(QStringLiteral("tableView_all_info"));
-        tableView_all_info->setGeometry(QRect(900, 580, 401, 511));
+        tableView_all_info->setGeometry(QRect(1360, 110, 411, 471));
         graphicsView_pie_chart = new QChartView(tab_test);
         graphicsView_pie_chart->setObjectName(QStringLiteral("graphicsView_pie_chart"));
-        graphicsView_pie_chart->setGeometry(QRect(1310, 580, 481, 511));
+        graphicsView_pie_chart->setGeometry(QRect(1290, 590, 481, 511));
         label_Diameter_threshold = new QLabel(tab_test);
         label_Diameter_threshold->setObjectName(QStringLiteral("label_Diameter_threshold"));
         label_Diameter_threshold->setGeometry(QRect(1200, 20, 211, 31));

@@ -53,14 +53,21 @@ Tensor Mat2Tensor(Mat camera_frame) {
     return img_var;
 }
 Tensor denorm(const torch::Tensor& tensor) {
-    return tensor.add(1).div_(2).clamp_(0, 1);
+    auto output = tensor.add(1.0);
+    output = output.div_(2.0);
+    output = output.clamp(0.0,1.0);
+
+
+    return output;
 };
 Mat Tensor2Mat(const Tensor& tensor){
     int h = tensor.size(2);
     int w = tensor.size(3);
+//    cout<<"out: "<<tensor<<endl;
+
     auto out_tensor = denorm(tensor);
-    out_tensor = out_tensor.mul(255).add(0.5).clamp(0, 255).permute({0,2,3,1}).to(torch::kU8);
-    out_tensor = out_tensor.to(torch::kCPU);
+    out_tensor = out_tensor.mul(255).add(0.5).clamp(0, 255).permute({0,2,3,1}).to(torch::kCPU,torch::kUInt8,false,false,torch::MemoryFormat::Contiguous);
+//    out_tensor = out_tensor.to(torch::kCPU);
     Mat m = Mat(h, 2, CV_8UC1, Scalar(255));
 
 //    cout<<"out size : "<<out_tensor.sizes()<<endl;
