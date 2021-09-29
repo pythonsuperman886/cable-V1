@@ -158,7 +158,7 @@ void MyMainWindow::time_out(){
 //    cout<<"get frame"<<endl;
     if(!camera_mat.empty()){
         preprocess_mat = preprocess.series_process(camera_mat);
-
+//        preprocess_mat = camera_mat;
         preprocess_qt = Mat2QImage(preprocess_mat).scaled(width_camera_label,height_camera_label);
         ui->label_camera_image->setPixmap(QPixmap::fromImage(preprocess_qt));
         re_rect_mat = preprocess_mat.clone();
@@ -181,6 +181,7 @@ void MyMainWindow::time_out(){
             ui->label_data_counts->setNum(save_data_nums);
         }
         if(Is_test){
+
 //            vector<Rect> defect_rect_lists;
             defect_rect_lists.clear();
             Mat net_out = tester->Test(re_rect_mat,defect_rect_lists);

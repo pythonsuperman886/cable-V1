@@ -3,12 +3,20 @@
 //
 
 #include "testnet.h"
-
 #include <utility>
 Testnet::Testnet():
             cuda_available (torch::cuda::is_available() ),
             device(Device(cuda_available ? torch::kCUDA : torch::kCPU)),
             G(UNet_Generator(1,1)),rectangle_color(255){
+
+
+
+     transform_A={
+            transforms_Grayscale(1),
+            transforms_Resize(Size(image_resize_num, image_resize_num), cv::INTER_LINEAR),  // {IH,IW,C} ===method{OW,OH}===> {OH,OW,C}
+            transforms_ToTensor(),                                                                            // Mat Image [0,255] or [0,65535] ===> Tensor Image [0,1]
+            transforms_Normalize(0.5, 0.5)                                                         // [0,1] ===> [-1,1]
+    };
 
 }
 void Testnet::init(){
@@ -147,27 +155,34 @@ Mat Testnet::rectangle_cable_defect(Mat fake_image,const vector<Rect>& lists) {
 
 }
 
-Mat Testnet::Test(const Mat& image,vector<Rect> &lists){
+Mat Testnet::Test( Mat& image,vector<Rect> &lists){
     tm.reset();
     tm.start();
-    Mat resize_image;
-    resize(image,resize_image,Size(128,128));
+//    Mat resize_image;
+//    resize(image,resize_image,Size(128,128));
     //    TickMeter tm;
     //    cout<<"forward..."<<endl;
     //    torch::AutoGradMode enable_grad(false);
     Is_save = false;
     Mat out;
+    Mat RGB;
     //    for(int i =1;i<15;i++){
 
-    Tensor input = Mat2Tensor(resize_image);
+    //    Tensor input = Mat2Tensor(resize_image);
+    cv::cvtColor(image, RGB, cv::COLOR_BGR2RGB);  // {0,1,2} = {B,G,R} ===> {0,1,2} = {R,G,B}
+
+    torch::Tensor input = transforms::apply(transform_A, RGB);
+    input = torch::unsqueeze(input, /*dim=*/0);  // {C,H,W} ===> {1,C,H,W}
+
     input = input.to(device);
 
     Tensor fake_B;
+    cout<<"forward"<<endl;
     fake_B = G->forward(input);
     out = Tensor2Mat(fake_B);
     Mat out2origin_size;
     lists = get_defect_rect_list(out,out2origin_size);
-//    cout<<"lists size: "<<lists.size()<<endl;
+    cout<<"lists size: "<<lists.size()<<endl;
 
 //    vector<Mat> rectangle_mat = rectangle_cable_defect(out,resize_image);
     tm.stop();

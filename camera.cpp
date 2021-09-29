@@ -48,6 +48,7 @@ Camera::Camera() {
 
     }
     nRet = MV_CC_OpenDevice(handle);
+
     if (MV_OK != nRet)
     {
         printf("MV_CC_OpenDevice fail! nRet [%x]\n", nRet);
@@ -56,6 +57,7 @@ Camera::Camera() {
         //        break;
     }
     nRet = MV_CC_SetEnumValue(handle, "TriggerMode", 0);
+    nRet = MV_CC_SetEnumValue(handle, "PixelFormat", PixelType_Gvsp_BGR8_Packed);
     if (MV_OK != nRet)
     {
         printf("MV_CC_SetTriggerMode fail! nRet [%x]\n", nRet);
@@ -152,7 +154,7 @@ Mat Camera::readFrame()
 
 
     bool bConvertRet = false;
-    srcImage = cv::Mat(stImageInfo.nHeight, stImageInfo.nWidth, CV_8U, pData);
+    srcImage = cv::Mat(stImageInfo.nHeight, stImageInfo.nWidth, CV_8UC3, pData);
 
     return srcImage;
 

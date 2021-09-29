@@ -91,7 +91,50 @@ transforms::Normalize1dImpl::Normalize1dImpl(const std::vector<float> mean_, con
     this->mean = torch::from_blob((float *)mean_.data(), {(long int)mean_.size()}, torch::kFloat).clone();  // mean{D}
     this->std = torch::from_blob((float *)std_.data(), {(long int)std_.size()}, torch::kFloat).clone();  // std{D}
 }
-
+//torch::Tensor Mat2tesnor_pro(cv::Mat &data_in){
+//
+//    Mat data_out;
+//    cv::Mat float_mat, float_mat_gray;
+//    data_in.convertTo(float_mat, CV_32F);  // discrete ===> continuous
+//    cv::cvtColor(float_mat, float_mat_gray, cv::COLOR_RGB2GRAY);
+//    float_mat_gray.convertTo(data_out, data_in.depth());  // continuous ===> discrete
+//
+//
+//    torch::Tensor mean, std;
+//    const float mean_=0.5;
+//    const float std_=0.5;
+//
+//    cv::Mat  float_mat_resize;
+//    data_out.convertTo(float_mat, CV_32F);  // discrete ===> continuous
+//    cv::resize(float_mat, float_mat_resize, Size(128,128), 0.0, 0.0,  cv::INTER_LINEAR);
+//    float_mat_resize.convertTo(data_out, data_in.depth());  // continuous ===> discrete
+//
+//    data_out.convertTo(float_mat, CV_32F);  // discrete ===> continuous
+//    float_mat *= 1.0 / (std::pow(2.0, data_out.elemSize1()*8) - 1.0);  // [0,255] or [0,65535] ===> [0,1]
+//    torch::Tensor data_out_src = torch::from_blob(float_mat.data, {float_mat.rows, float_mat.cols, float_mat.channels()}, torch::kFloat);  // {0,1,2} = {H,W,C}
+//    data_out_src = data_out_src.permute({2, 0, 1});  // {0,1,2} = {H,W,C} ===> {0,1,2} = {C,H,W}
+//    torch::Tensor data_out_tensor = data_out_src.contiguous().detach().clone();
+//    mean = torch::from_blob((float *)&mean_, {1, 1, 1}, torch::kFloat).clone();  // mean{1,1,1}
+//    std = torch::from_blob((float *)&std_, {1, 1, 1}, torch::kFloat).clone();  // std{1,1,1}
+//
+//
+//
+//    long int channels = data_out_tensor.size(0);
+//
+//    torch::Tensor meanF =mean;
+//    if (channels < meanF.size(0)){
+//        meanF = meanF.split(/*split_size=*/channels, /*dim=*/0).at(0);  // meanF{*,1,1} ===> {C,1,1}
+//    }
+//
+//    torch::Tensor stdF = std;
+//    if (channels < stdF.size(0)){
+//        stdF = stdF.split(/*split_size=*/channels, /*dim=*/0).at(0);  // stdF{*,1,1} ===> {C,1,1}
+//    }
+//
+//    data_out_src = (data_out_tensor - meanF.to(data_out_tensor.device())) / stdF.to(data_out_tensor.device());  // data_in{C,H,W}, meanF{*,1,1}, stdF{*,1,1} ===> data_out_src{C,H,W}
+//    data_out_tensor = data_out_src.contiguous().detach().clone();
+//    return data_out_tensor;
+//}
 
 // -----------------------------------------------------------------------------------
 // namespace{transforms} -> class{Normalize1dImpl}(ComposeImpl) -> function{forward}
@@ -135,6 +178,7 @@ transforms::GrayscaleImpl::GrayscaleImpl(const int channels_){
 // namespace{transforms} -> class{GrayscaleImpl}(ComposeImpl) -> function{forward}
 // ---------------------------------------------------------------------------------
 void transforms::GrayscaleImpl::forward(cv::Mat &data_in, cv::Mat &data_out){
+    cout<<"image channels: "<<data_in.channels()<<endl;
     cv::Mat float_mat, float_mat_gray;
     data_in.convertTo(float_mat, CV_32F);  // discrete ===> continuous
     cv::cvtColor(float_mat, float_mat_gray, cv::COLOR_RGB2GRAY);

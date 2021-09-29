@@ -10,6 +10,7 @@
 #include "transforms.hpp"
 #include "networks.hpp"
 #include "dataloader.h"
+#include "loss.h"
 class Trainer {
 public:
     Trainer();
@@ -55,7 +56,7 @@ private:
     torch::optim::Adam optimizer_D;
     torch::optim::Adam optimizer_G;
 
-    torch::nn::MSELoss criterion_GAN ;
+    torch::nn::BCEWithLogitsLoss criterion_GAN ;
     torch::nn::L1Loss criterion_L1 ;
 
 

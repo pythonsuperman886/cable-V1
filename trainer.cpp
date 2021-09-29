@@ -10,9 +10,9 @@ Trainer::Trainer():cuda_available(torch::cuda::is_available()),
                 device(Device( cuda_available? torch::kCUDA : torch::kCPU)),
                 G(UNet_Generator(1,1)),
                 D(PatchGAN_Discriminator(1,1,64)),
-                optimizer_D(torch::optim::Adam(D->parameters(), torch::optim::AdamOptions(learning_rate))),
-                optimizer_G(torch::optim::Adam(G->parameters(), torch::optim::AdamOptions(learning_rate))),
-                criterion_GAN(torch::nn::MSELoss(torch::nn::MSELossOptions().reduction(torch::kMean))),
+                optimizer_D(torch::optim::Adam(D->parameters(), torch::optim::AdamOptions(learning_rate).betas({0.5,0.999}))),
+                optimizer_G(torch::optim::Adam(G->parameters(), torch::optim::AdamOptions(learning_rate).betas({0.5,0.999}))),
+                criterion_GAN(torch::nn::BCEWithLogitsLossOptions().reduction(torch::kMean)),
                 criterion_L1(torch::nn::L1Loss(torch::nn::L1LossOptions().reduction(torch::kMean)))
 
 
@@ -37,6 +37,8 @@ Trainer::Trainer():cuda_available(torch::cuda::is_available()),
         transforms_Normalize(0.5, 0.5)                                                         // [0,1] ===> [-1,1]
     };
 
+    G->init_weight();
+    D->init_weight();
 
 
 //    G = UNet_Generator(1,1);
@@ -147,7 +149,6 @@ void Trainer::train() {
 //            for(auto &i:D->parameters()){
 //                i.set_requires_grad(false);
 //            }
-            optimizer_G.zero_grad();
             fake_AB = torch::cat({real_A, fake_B}, /*dim=*/1);
             pred_fake = D->forward(fake_AB);
 //            pred_fake = pred_fake.reshape({batch_size_data, -1});
@@ -155,6 +156,7 @@ void Trainer::train() {
             loss_G_GAN = criterion_GAN(pred_fake, label_real);
             loss_G_L1 = criterion_L1(fake_B, real_B) * lambda_L1;
             loss_G = loss_G_GAN + loss_G_L1;
+            optimizer_G.zero_grad();
             loss_G.backward();
             optimizer_G.step();
 

@@ -28,6 +28,7 @@ public:
     UNet_GeneratorImpl(){};
     UNet_GeneratorImpl(size_t input_nc=1,size_t output_nc=1,size_t num_downs=7,size_t ngf=64,bool use_dropout=false);
     torch::Tensor forward(torch::Tensor x);
+    void init_weight();
 };
 
 // -------------------------------------------------
@@ -53,6 +54,8 @@ public:
     PatchGAN_DiscriminatorImpl(){}
     PatchGAN_DiscriminatorImpl(size_t input_nc=1,size_t output_nc=1,size_t ndf=64);
     torch::Tensor forward(torch::Tensor x);
+    void init_weight();
+
 };
 
 TORCH_MODULE(UNet_Generator);

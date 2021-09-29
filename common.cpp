@@ -101,12 +101,12 @@ vector<int> Max_deal_pic(const Mat& image,int threshold)
     //    string path = "/home/explore/data/28/18149.png";
 //    Mat image = imread(path);
     // 灰度处理
-//    Mat gray_image;
-//    cvtColor(image,gray_image,CV_BGR2GRAY);
+    Mat gray_image;
+    cvtColor(image,gray_image,CV_BGR2GRAY);
     // 高斯滤波
     Size kernel_size(3,3);
     Mat blur;
-    GaussianBlur(image,blur,kernel_size,19);
+    GaussianBlur(gray_image,blur,kernel_size,19);
     // 二值化
     Mat binary;
     cv::threshold(blur, binary, threshold, 255, CV_THRESH_BINARY);
@@ -166,13 +166,13 @@ vector<int> min_edge_out(const Mat& image,int threshold)
 {
     //    string path = "/home/explore/data/28/18149.png";
 //    Mat image = imread(path);
-//    Mat gray_image;
+    Mat gray_image;
     // 灰度转换
-//    cvtColor(image,gray_image,CV_BGR2GRAY);
+    cvtColor(image,gray_image,CV_BGR2GRAY);
     // 高斯滤波
     Size kernel_size(5,5);
     Mat blur;
-    GaussianBlur(image,blur,kernel_size,11);
+    GaussianBlur(gray_image,blur,kernel_size,11);
     // 二值化
     Mat binary;
     cv::threshold(blur, binary, threshold, 255, CV_THRESH_BINARY);

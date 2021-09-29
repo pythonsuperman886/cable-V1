@@ -82,6 +82,9 @@ UNetBlockImpl::UNetBlockImpl(const std::pair<size_t, size_t> outside_nc, const s
 
 }
 
+void UNet_GeneratorImpl::init_weight(){
+    this->model->apply(weights_init);
+};
 
 // ----------------------------------------------------------------------
 // struct{UNetBlockImpl}(nn::Module) -> function{forward}
@@ -137,7 +140,9 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
 //    this->model->apply(weights_init);
 
 }
-
+void PatchGAN_DiscriminatorImpl::init_weight(){
+    this->model->apply(weights_init);
+};
 
 // ----------------------------------------------------------------------
 // struct{PatchGAN_DiscriminatorImpl}(nn::Module) -> function{forward}
@@ -161,7 +166,7 @@ void weights_init(nn::Module &m){
         auto p = m.named_parameters(false);
         auto w = p.find("weight");
         auto b = p.find("bias");
-        if (w != nullptr) nn::init::normal_(*w),0.0,0.02;//nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
+        if (w != nullptr) nn::init::normal_(*w,0.0,0.02);//nn::init::normal_(*w, /*mean=*/0.0, /*std=*/0.02);
         if (b != nullptr) nn::init::constant_(*b, /*bias=*/0.0);
 //        cout<<"intit weight: "<<"conv2d"<<endl;
     }

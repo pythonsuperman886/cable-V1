@@ -6,13 +6,15 @@
 #define CABLE_V1_TESTNET_H
 #include "common.h"
 #include "networks.hpp"
+#include "transforms.hpp"
+
 class Testnet {
 public:
     Testnet();
     void init();
     ~Testnet();
     vector<Mat> Test(const Mat& image);
-    Mat Test(const Mat& image,vector<Rect> &lists);
+    Mat Test( Mat& image,vector<Rect> &lists);
     Mat rectangle_cable_defect(Mat fake_image,const vector<Rect>& lists);
 
     vector<Mat> rectangle_cable_defect( Mat& fake_image,Mat &real_image);
@@ -28,6 +30,8 @@ public:
     int test_num=0;
 
 private:
+    int image_resize_num = 128;
+    std::vector<transforms_Compose> transform_A;
     bool Is_save=false;
 //    Scalar rectangle_color;
 //    int color;
