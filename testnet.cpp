@@ -72,8 +72,8 @@ vector<Rect> Testnet::get_defect_rect_list( Mat fake_image,Mat &resize_to_origin
     Mat border_image_to_origin;
     Mat resize_image_to_rect;
 
-    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
-//    cv::threshold(fake_image, fake_image, 25, 255, CV_THRESH_BINARY);
+//    cv::adaptiveThreshold(fake_image,fake_image,255,0,THRESH_BINARY,threshold_blocksize,0);
+    cv::threshold(fake_image, fake_image, threshold_blocksize, 255, CV_THRESH_BINARY);
 
     resize(fake_image,resize_image_to_rect,Size(rect_image_width,rect_image_height));
 

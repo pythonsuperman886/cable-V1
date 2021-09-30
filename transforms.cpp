@@ -178,7 +178,7 @@ transforms::GrayscaleImpl::GrayscaleImpl(const int channels_){
 // namespace{transforms} -> class{GrayscaleImpl}(ComposeImpl) -> function{forward}
 // ---------------------------------------------------------------------------------
 void transforms::GrayscaleImpl::forward(cv::Mat &data_in, cv::Mat &data_out){
-    cout<<"image channels: "<<data_in.channels()<<endl;
+//    cout<<"image channels: "<<data_in.channels()<<endl;
     cv::Mat float_mat, float_mat_gray;
     data_in.convertTo(float_mat, CV_32F);  // discrete ===> continuous
     cv::cvtColor(float_mat, float_mat_gray, cv::COLOR_RGB2GRAY);
@@ -436,16 +436,18 @@ int transforms::DefectImpl:: myseed=1;
 //int transforms::DefectImpl::random_type = (int)(rand()%4);
 //        static double size_ratio = min+m1*diff;
 //int transforms::DefectImpl::random_color_num = rand()%200;
+
+
 void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
 
-//    Mat target;
+    //    Mat target;
 
     if(is_mask){
         data_out = Mat::zeros(data_in.rows,data_in.cols,CV_8UC1);
-//        random_color = 255;
+        //        random_color = 255;
     }else{
         data_out = data_in;
-//        random_color = (int)(rand()%200);
+        //        random_color = (int)(rand()%200);
     }
     srand(myseed);
     int h = data_in.rows;
@@ -453,46 +455,105 @@ void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
     for(int i = 0;i<10;i++){
         double m1=(double)(rand()%100)/100;
         double m2=(double)(rand()%100)/100;
-//        m1 = m1+i*0.2;
-//        m2 = m2+i*0.2;
+        //        m1 = m1+i*0.2;
+        //        m2 = m2+i*0.2;
         int random_color_num = rand()%200;
         int random_type = (int)(rand()%4);
         double size_ratio = min+m1*diff;
         int random_color = (is_mask?255:random_color_num);
         Scalar c(random_color);
-//        cout<<"color: "<<random_color<<endl;
+        //        cout<<"color: "<<random_color<<endl;
 
 
-        double size = size_ratio*( h>w?w:h)*0.3;
+        int size = size_ratio*( h>w?w:h)*0.5;
         int x = (int)(m1*w);
-        int line_thickness = (int)(rand()%10)+1;
-        int circle_radius = (int)(rand()%10)+1;
-        double random_y_size = (double)(rand()%10)/10;
+        int line_thickness = (int)(rand()%4)+1;
+        int circle_radius = (int)(rand()%2)+1;
 
-//        cout<<"x: "<<m1<<endl;
+        //        cout<<"x: "<<m1<<endl;
         int y = (int)(m2*h);
 
-//        circle(data_out, Point(x,y), 6, c,thickness);
+        circle(data_out, Point(x,y), 6, c,thickness);
 
         if(random_type ==0){
             circle(data_out, Point(x,y), circle_radius, c,thickness);
 
         }else if(random_type == 1){
-//            ellipse(data_out,Point(x, y),Size(size, size),30,0,360,c,thickness);
+            //            ellipse(data_out,Point(x, y),Size(size, size),30,0,360,c,thickness);
 
         }else if(random_type == 2){
-//            rectangle(data_out,Rect(x,y,x+size*0.05,y+size*0.02), c, thickness);
+            rectangle(data_out,Rect(x,y,x+size*0.5,y+size*0.2), c, thickness);
 
         }else if(random_type == 3){
-            line(data_out, Point(x, y), Point(x+size, y+size*random_y_size), c, line_thickness);
+            line(data_out, Point(x, y), Point(x+size, y+size), c, line_thickness);
 
         }
     }
-//    std::cout<<"myseed: "<< transforms::DefectImpl::myseed<<std::endl;
-//    if(is_mask)
-//        myseed++;
-//        myseed = myseed %1000;
-//    data_out = data_in.clone();
-//    imwrite("./1.png",data_out);
+    //    std::cout<<"myseed: "<< transforms::DefectImpl::myseed<<std::endl;
+    //    if(is_mask)
+    //        myseed++;
+    //        myseed = myseed %1000;
+    //    data_out = data_in.clone();
+    //    imwrite("./1.png",data_out);
 
 }
+//void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
+//
+////    Mat target;
+//
+//    if(is_mask){
+//        data_out = Mat::zeros(data_in.rows,data_in.cols,CV_8UC1);
+////        random_color = 255;
+//    }else{
+//        data_out = data_in;
+////        random_color = (int)(rand()%200);
+//    }
+//    srand(myseed);
+//    int h = data_in.rows;
+//    int w = data_in.cols;
+//    for(int i = 0;i<10;i++){
+//        double m1=(double)(rand()%100)/100;
+//        double m2=(double)(rand()%100)/100;
+////        m1 = m1+i*0.2;
+////        m2 = m2+i*0.2;
+//        int random_color_num = rand()%200;
+//        int random_type = (int)(rand()%4);
+//        double size_ratio = min+m1*diff;
+//        int random_color = (is_mask?255:random_color_num);
+//        Scalar c(random_color);
+////        cout<<"color: "<<random_color<<endl;
+//
+//
+//        double size = size_ratio*( h>w?w:h)*0.3;
+//        int x = (int)(m1*w);
+//        int line_thickness = (int)(rand()%10)+1;
+//        int circle_radius = (int)(rand()%10)+1;
+//        double random_y_size = (double)(rand()%10)/10;
+//
+////        cout<<"x: "<<m1<<endl;
+//        int y = (int)(m2*h);
+//
+////        circle(data_out, Point(x,y), 6, c,thickness);
+//
+//        if(random_type ==0){
+//            circle(data_out, Point(x,y), circle_radius, c,thickness);
+//
+//        }else if(random_type == 1){
+////            ellipse(data_out,Point(x, y),Size(size, size),30,0,360,c,thickness);
+//
+//        }else if(random_type == 2){
+////            rectangle(data_out,Rect(x,y,x+size*0.05,y+size*0.02), c, thickness);
+//
+//        }else if(random_type == 3){
+//            line(data_out, Point(x, y), Point(x+size, y+size*random_y_size), c, line_thickness);
+//
+//        }
+//    }
+////    std::cout<<"myseed: "<< transforms::DefectImpl::myseed<<std::endl;
+////    if(is_mask)
+////        myseed++;
+////        myseed = myseed %1000;
+////    data_out = data_in.clone();
+////    imwrite("./1.png",data_out);
+//
+//}
