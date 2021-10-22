@@ -4,7 +4,7 @@
 
 #ifndef CABLE_V1_MYDATABASE_H
 #define CABLE_V1_MYDATABASE_H
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>

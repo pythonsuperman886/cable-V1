@@ -8,8 +8,9 @@
 
 Trainer::Trainer():cuda_available(torch::cuda::is_available()),
                 device(Device( cuda_available? torch::kCUDA : torch::kCPU)),
-                G(UNet_Generator(1,1)),
-                D(PatchGAN_Discriminator(1,1,64)),
+//                G(UNet_Generator(3,1)),
+                G(Resnet_Generator(3,1)),
+                D(PatchGAN_Discriminator(3,1,64)),
                 optimizer_D(torch::optim::Adam(D->parameters(), torch::optim::AdamOptions(learning_rate).betas({0.5,0.999}))),
                 optimizer_G(torch::optim::Adam(G->parameters(), torch::optim::AdamOptions(learning_rate).betas({0.5,0.999}))),
                 criterion_GAN(torch::nn::BCEWithLogitsLossOptions().reduction(torch::kMean)),
@@ -22,9 +23,11 @@ Trainer::Trainer():cuda_available(torch::cuda::is_available()),
 
 
     transform_A={
-        transforms_Grayscale(1),
+        transforms_Grayscale(3),
         transforms_Resize(Size(image_resize_num, image_resize_num), cv::INTER_LINEAR),  // {IH,IW,C} ===method{OW,OH}===> {OH,OW,C}
-        transforms_Defect(thickiness,min,max),
+//        transforms_Defect(thickiness,min,max),
+        transforms_TuDianDefect(false),
+
         transforms_ToTensor(),                                                                            // Mat Image [0,255] or [0,65535] ===> Tensor Image [0,1]
         transforms_Normalize(0.5, 0.5)                                                         // [0,1] ===> [-1,1]
     };
@@ -32,7 +35,9 @@ Trainer::Trainer():cuda_available(torch::cuda::is_available()),
     transform_B={
         transforms_Grayscale(1),
         transforms_Resize(Size(image_resize_num, image_resize_num), cv::INTER_LINEAR),  // {IH,IW,C} ===method{OW,OH}===> {OH,OW,C}
-        transforms_Defect(thickiness,min,max,true),
+//        transforms_Defect(thickiness,min,max,true),
+        transforms_TuDianDefect(true),
+
         transforms_ToTensor(),                                                                            // Mat Image [0,255] or [0,65535] ===> Tensor Image [0,1]
         transforms_Normalize(0.5, 0.5)                                                         // [0,1] ===> [-1,1]
     };
@@ -87,7 +92,7 @@ void Trainer::train() {
             auto fake_AB = torch::cat({real_A, fake_B.detach()}, /*dim=*/1);
 //            cout<<"fake_ab: "<<fake_AB.sizes()<<endl;
             auto pred_fake = D->forward(fake_AB.detach());
-            //            cout<<"pred_fake output: "<<pred_fake.sizes()<<endl;
+//            cout<<"pred_fake output: "<<pred_fake.sizes()<<endl;
 
 
             auto label_real = torch::full({pred_fake.size(0), pred_fake.size(1), pred_fake.size(2), pred_fake.size(3)}, /*value*/1.0, torch::TensorOptions().dtype(torch::kFloat)).to(device);
@@ -95,6 +100,8 @@ void Trainer::train() {
 
 
             real_AB = torch::cat({real_A, real_B}, /*dim=*/1);
+//            cout<<"real_AB: "<<real_AB.sizes()<<endl;
+
             pred_real = D->forward(real_AB);
 
 //            pred_real = pred_real.reshape({batch_size_data, -1});
@@ -186,10 +193,31 @@ void Trainer::train() {
             Mat A = Tensor2Mat(real_A);
             Mat B = Tensor2Mat(real_B);
             Mat C = Tensor2Mat(fake_B);
-            Mat m = Mat(5, A.cols, CV_8UC1, Scalar(255));
-            vector<Mat> ouputs={
-                    A,m,B,m,C
-            };
+            cout<<"A c: "<<real_A.size(1)<<endl;
+            cout<<"B c: "<<real_B.size(1)<<endl;
+            cout<<"C c: "<<fake_B.size(1)<<endl;
+            vector<Mat> ouputs;
+            if(real_A.size(1)==1&&real_B.size(1)==1&&fake_B.size(1)==1){
+                Mat m = Mat(5, A.cols, CV_8UC1, Scalar(255));
+                ouputs={
+                        A,m,B,m,C
+                };
+            }else if(real_A.size(1) ==3&&real_B.size(1)==3&&fake_B.size(1)==3){
+                Mat m = Mat(5, A.cols, CV_8UC3, Scalar(255,255,255));
+                ouputs={
+                        A,m,B,m,C
+                };
+            }else{
+                cout<<"different"<<endl;
+                cvtColor(B,B,CV_GRAY2BGR);
+                cvtColor(C,C,CV_GRAY2BGR);
+
+                Mat m = Mat(5, A.cols, CV_8UC3, Scalar(255,255,255));
+                ouputs={
+                        A,m,B,m,C
+                };
+            }
+
 
 
             vconcat(ouputs,combine);
@@ -201,7 +229,9 @@ void Trainer::train() {
             //            save_image(fake_B, sample_output_dir_path + "fake_B-" + std::to_string(epoch + 1) + ".png");
 //            save_image(result,  "result-" + std::to_string(epoch + 1) + ".png");
             transforms::DefectImpl::myseed++;
+            transforms::TuDianDefectImpl::myseed++;
             transforms::DefectImpl::myseed = transforms::DefectImpl:: myseed %1000;
+            transforms::TuDianDefectImpl::myseed = transforms::TuDianDefectImpl:: myseed %1000;
             if(!Is_continue_train){
 //                Is_continue_train = true;
                 cout<<"stop training..."<<endl;

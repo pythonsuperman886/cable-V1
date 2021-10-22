@@ -50,7 +50,8 @@ private:
     std::vector<transforms_Compose> transform_A;
     std::vector<transforms_Compose> transform_B;
 
-    UNet_Generator G;
+//    UNet_Generator G;
+    Resnet_Generator G;/**/
     PatchGAN_Discriminator D;
 
     torch::optim::Adam optimizer_D;

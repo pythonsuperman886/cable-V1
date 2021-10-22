@@ -20,7 +20,7 @@ QImage Mat2QImage( const cv::Mat& InputMat)
         cv::cvtColor(InputMat, TmpMat, CV_BGR2RGB);
     }
 
-
+//    cout<<"q image channel : "<<InputMat.channels()<<endl;
     // construct the QImage using the data of the mat, while do not copy the data
 
     QImage Result = QImage((const uchar*)(TmpMat.data), TmpMat.cols, TmpMat.rows,TmpMat.cols*TmpMat.channels(),
@@ -61,6 +61,7 @@ Tensor denorm(const torch::Tensor& tensor) {
     return output;
 };
 Mat Tensor2Mat(const Tensor& tensor){
+    int c = tensor.size(1);
     int h = tensor.size(2);
     int w = tensor.size(3);
 //    cout<<"out: "<<tensor<<endl;
@@ -68,31 +69,62 @@ Mat Tensor2Mat(const Tensor& tensor){
     auto out_tensor = denorm(tensor);
     out_tensor = out_tensor.mul(255).add(0.5).clamp(0, 255).permute({0,2,3,1}).to(torch::kCPU,torch::kUInt8,false,false,torch::MemoryFormat::Contiguous);
 //    out_tensor = out_tensor.to(torch::kCPU);
-    Mat m = Mat(h, 2, CV_8UC1, Scalar(255));
+    if(c==1){
+        Mat m = Mat(h, 2, CV_8UC1, Scalar(255));
 
-//    cout<<"out size : "<<out_tensor.sizes()<<endl;
-    if(out_tensor.size(0)>1){
-        Mat combine;
-        vector<Mat> out_lists;
-        for(int n=0;n<out_tensor.size(0);n++){
-            auto  out = out_tensor[n];
+        //    cout<<"out size : "<<out_tensor.sizes()<<endl;
+        if(out_tensor.size(0)>1){
+            Mat combine;
+            vector<Mat> out_lists;
+            for(int n=0;n<out_tensor.size(0);n++){
+                auto  out = out_tensor[n];
 
-            cv::Mat Mat_out(cv::Size(h, w), CV_8U, out.data_ptr());
-            out_lists.push_back(Mat_out);
-            out_lists.push_back(m);
+                cv::Mat Mat_out(cv::Size(h, w), CV_8U, out.data_ptr());
+                out_lists.push_back(Mat_out);
+                out_lists.push_back(m);
 
-            //        tensor_lists.
+                //        tensor_lists.
 
+            }
+            hconcat(out_lists,combine);
+            Mat out = combine.clone();
+            return out;
+        }else{
+            cv::Mat Mat_out(cv::Size(h, w), CV_8U, out_tensor.data_ptr());
+            Mat out = Mat_out.clone();
+            return out;
+            //        return out_tensor；
         }
-        hconcat(out_lists,combine);
-        Mat out = combine.clone();
-        return out;
+    }else if(c==3){
+        Mat m = Mat(h, 2, CV_8UC3, Scalar(255,255,255));
+
+        //    cout<<"out size : "<<out_tensor.sizes()<<endl;
+        if(out_tensor.size(0)>1){
+            Mat combine;
+            vector<Mat> out_lists;
+            for(int n=0;n<out_tensor.size(0);n++){
+                auto  out = out_tensor[n];
+
+                cv::Mat Mat_out(cv::Size(h, w), CV_8UC3, out.data_ptr());
+                out_lists.push_back(Mat_out);
+                out_lists.push_back(m);
+
+                //        tensor_lists.
+
+            }
+            hconcat(out_lists,combine);
+            Mat out = combine.clone();
+            return out;
+        }else{
+            cv::Mat Mat_out(cv::Size(h, w), CV_8UC3, out_tensor.data_ptr());
+            Mat out = Mat_out.clone();
+            return out;
+            //        return out_tensor；
+        }
     }else{
-        cv::Mat Mat_out(cv::Size(h, w), CV_8U, out_tensor.data_ptr());
-        Mat out = Mat_out.clone();
-        return out;
-//        return out_tensor；
+        cout<<"error channel is not 1 or 3 !"<<endl;
     }
+
 //    at::TensorList tensor_lists;
 
 };

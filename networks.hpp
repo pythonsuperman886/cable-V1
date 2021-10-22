@@ -30,7 +30,15 @@ public:
     torch::Tensor forward(torch::Tensor x);
     void init_weight();
 };
-
+struct Resnet_GeneratorImpl: nn::Module{
+public:
+    Resnet_GeneratorImpl(){};
+    Resnet_GeneratorImpl(int intput_nc=1,int output_nc=1,int num_downs=7,int ngf=64,bool use_dropout=false);
+    torch::Tensor forward(torch::Tensor x);
+    void init_weight();
+private:
+    nn::Sequential model;
+};
 // -------------------------------------------------
 // struct{UNetBlockImpl}(nn::Module)
 // -------------------------------------------------
@@ -42,6 +50,16 @@ public:
     UNetBlockImpl(){}    
     UNetBlockImpl(const std::pair<size_t, size_t> outside_nc, const size_t inside_nc, UNetBlockImpl &submodule, bool outermost_=false, bool innermost=false, bool use_dropout=false);
     torch::Tensor forward(torch::Tensor x);
+};
+struct ResnetBlockImpl:nn::Module{
+public:
+    ResnetBlockImpl(){};
+    ResnetBlockImpl(int intput_nc,int output_nc);
+    torch::Tensor forward(torch::Tensor x);
+//    void init_weight();
+private:
+    nn::Sequential model;
+
 };
 
 // -------------------------------------------------
@@ -57,8 +75,10 @@ public:
     void init_weight();
 
 };
-
 TORCH_MODULE(UNet_Generator);
+TORCH_MODULE(Resnet_Generator);
+
+TORCH_MODULE(ResnetBlock);
 TORCH_MODULE(UNetBlock);
 TORCH_MODULE(PatchGAN_Discriminator);
 

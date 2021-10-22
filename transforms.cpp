@@ -179,17 +179,24 @@ transforms::GrayscaleImpl::GrayscaleImpl(const int channels_){
 // ---------------------------------------------------------------------------------
 void transforms::GrayscaleImpl::forward(cv::Mat &data_in, cv::Mat &data_out){
 //    cout<<"image channels: "<<data_in.channels()<<endl;
-    cv::Mat float_mat, float_mat_gray;
+    cv::Mat float_mat, float_mat_gray,float_mat_bgr;
     data_in.convertTo(float_mat, CV_32F);  // discrete ===> continuous
     cv::cvtColor(float_mat, float_mat_gray, cv::COLOR_RGB2GRAY);
+
+
     float_mat_gray.convertTo(data_out, data_in.depth());  // continuous ===> discrete
-    if (this->channels > 1){
-        std::vector<cv::Mat> multi(this->channels);
-        for (int i = 0; i < this->channels; i++){
-            multi.at(i) = data_out.clone();
-        }
-        cv::merge(multi, data_out);
+    if(this->channels ==3){
+        cv::cvtColor(data_in, float_mat_bgr, cv::COLOR_RGB2BGR);
+        data_out = float_mat_bgr.clone();
+//        float_mat_bgr.convertTo(data_out, data_in.depth());  // continuous ===> discrete
     }
+//    if (this->channels > 1){
+//        std::vector<cv::Mat> multi(this->channels);
+//        for (int i = 0; i < this->channels; i++){
+//            multi.at(i) = data_out.clone();
+//        }
+//        cv::merge(multi, data_out);
+//    }
     return;
 }
 
@@ -428,6 +435,7 @@ transforms::DefectImpl::DefectImpl(int thickness_,int min_,int max_,bool is_mask
 }
 //int transforms::DefectImpl::myseed = 1;
 int transforms::DefectImpl:: myseed=1;
+//int transforms::TuDianDefectImpl:: myseed=1;
 //srand(transforms::DefectImpl:: myseed);
 
 //double transforms::DefectImpl:: m1=(double)(rand()%100)/100;
@@ -496,6 +504,97 @@ void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
     //    data_out = data_in.clone();
     //    imwrite("./1.png",data_out);
 
+}
+
+transforms::TuDianDefectImpl::TuDianDefectImpl(bool is_mask_) {
+    is_mask = is_mask_;
+}
+int transforms::TuDianDefectImpl::myseed=1;
+void transforms::TuDianDefectImpl::forward(Mat &data_in,Mat &data_out){
+    int h = data_in.rows;
+    int w = data_in.cols;
+
+
+
+    data_out = Mat::zeros(data_in.rows,data_in.cols,CV_8UC1);
+    //        Mat mask = Mat::zeros(Size(w,h), CV_8UC1);
+
+
+    srand(myseed);
+
+
+    for(int i = 0;i<5;i++){
+        double l1=(double)(rand()%60)/100;
+        double l2=(double)(rand()%60)/100;
+        double l3=(double)(rand()%60)/100;
+        double l4=(double)(rand()%60)/100;
+        //                m1 = m1+i*0.2;
+        //                m2 = m2+i*0.2;
+        int random_color_125 = 200;
+        int random_color_63 = 20;
+        int x_left = l1*w;
+        int y_left = l2*h;
+        int x_right = l3*w;
+        int y_right = l4*h;
+
+        double r1 = (double)(rand()%100)/100;
+        double r2 = (double)(rand()%100)/100;
+        double r3 = (double)(rand()%100)/100;
+        double r4 = (double)(rand()%100)/100;
+
+        int ratio = (double)(rand()%100)/100;
+        int size = 0.05*( h>w?w:h)*ratio;
+        int x_left_r = r1*w;
+        int y_left_r = r2*h;
+        int width_r = r3*w;
+        int height_r = r4*h;
+
+        double c1 = (double)(rand()%100)/100;
+        double c2 = (double)(rand()%100)/100;
+        int x_center_c = c1*w;
+        int y_center_c = c2*h;
+        int radius = (int)(rand()%(h/10))+1;
+
+
+        if(is_mask){
+            line(data_out, Point(x_left,y_left), Point(x_left+size,y_left+size), Scalar(255), 5, LINE_8);//线段绘制
+            line(data_out, Point(x_left,y_left), Point(x_left+size,y_left+size), Scalar(0), 2, LINE_8);//线段绘制
+
+
+            rectangle(data_out, Rect(x_left_r,y_left_r,x_left_r+size*0.3,y_left_r*0.2), Scalar(255), -1, LINE_8);//矩形绘制
+            rectangle(data_out, Rect(x_left_r,y_left_r,(x_left_r+size*0.3)/2,y_left_r*0.2), Scalar(0), -1, LINE_8);//矩形绘制
+
+            circle(data_out, Point(x_center_c, y_center_c), radius, Scalar(255), -1, LINE_8);//圆绘制
+            ellipse(data_out,Point(x_center_c,y_center_c),Size(radius,radius),0,-90,-270,Scalar(0),-1);
+
+            rectangle(data_out, Rect(0,h/2-h/6,w,h/3+h/20), Scalar(0), -1, LINE_8);//矩形绘制
+
+        }else{
+            line(data_out, Point(x_left,y_left), Point(x_right,y_right), Scalar(random_color_125), 5, LINE_8);//线段绘制
+            line(data_out, Point(x_left,y_left), Point(x_right,y_right), Scalar(random_color_63), 2, LINE_8);//线段绘制
+
+
+            rectangle(data_out, Rect(x_left_r,y_left_r,x_left_r+size*0.3,y_left_r*0.2), Scalar(random_color_125), -1, LINE_8);//矩形绘制
+            rectangle(data_out, Rect(x_left_r,y_left_r,(x_left_r+size*0.3)/2,y_left_r*0.2), Scalar(random_color_63), -1, LINE_8);//矩形绘制
+
+            circle(data_out, Point(x_center_c, y_center_c), radius, Scalar(random_color_125), -1, LINE_8);//圆绘制
+            ellipse(data_out,Point(x_center_c,y_center_c),Size(radius,radius),0,-90,-270,Scalar(random_color_63),-1);
+            blur(data_out,data_out,Size(13,13));
+
+        }
+    }
+    if(!is_mask){
+        for (int i = 0; i < data_out.rows; ++i) {
+            for (int j = 0; j < data_out.cols; ++j) {
+                int b=data_out.at<uchar>(i,j);
+                float rat=pow((b/50.0),3)+1;
+                data_in.at<Vec3b>(i,j)[0]=min(255,int(data_in.at<Vec3b>(i,j)[0]*rat));
+                data_in.at<Vec3b>(i,j)[1]=min(255,int(data_in.at<Vec3b>(i,j)[1]*rat));
+                data_in.at<Vec3b>(i,j)[2]=min(255,int(data_in.at<Vec3b>(i,j)[2]*rat));
+            }
+        }
+        data_out = data_in.clone();
+    }
 }
 //void transforms::DefectImpl::forward(cv::Mat &data_in, cv::Mat &data_out) {
 //

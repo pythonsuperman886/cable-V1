@@ -128,7 +128,20 @@ namespace transforms{
 //        static random_color = (is_mask?255:(int)(rand()%200));
 
     };
+    #define transforms_TuDianDefect std::make_shared<transforms::TuDianDefectImpl>
+    class TuDianDefectImpl : public ComposeImpl{
+    public:
+        TuDianDefectImpl(){};
+        explicit TuDianDefectImpl(bool is_mask);
+        bool type() override{return CV_MAT;}
+        void forward(cv::Mat &data_in,cv::Mat &data_out)override;
+        static int myseed;
+    private:
+        bool is_mask;
+    };
 
+
+//    int TuDianDefectImpl::myseed=6;
     // --------------------------------------------------------------
     // namespace{transforms} -> class{ConvertIndexImpl}(ComposeImpl)
     // --------------------------------------------------------------

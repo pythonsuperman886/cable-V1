@@ -35,7 +35,58 @@ UNet_GeneratorImpl::UNet_GeneratorImpl(size_t input_nc,size_t output_nc,size_t N
 //    this->model->apply(weights_init);
 
 }
+Resnet_GeneratorImpl::Resnet_GeneratorImpl(int input_nc,int output_nc,int num_downs,int ngf,bool usr_dropout){
+    this->model->push_back(nn::ReflectionPad2d(3));
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc, ngf,7).stride(1).padding(0).bias(false)));
 
+    this->model->push_back(nn::BatchNorm2d(ngf));
+    this->model->push_back(nn::ReLU(nn::ReLUOptions().inplace(true)));
+
+
+    int n_downsampling=2;
+    int mult=0;
+    for(int i =0;i<n_downsampling;i++){
+        mult = pow(2,i);
+        this->model->push_back(nn::Conv2d(nn::Conv2dOptions(ngf*mult, ngf*mult*2,3).stride(2).padding(1).bias(false)));
+
+        this->model->push_back(nn::BatchNorm2d(ngf*mult*2));
+        this->model->push_back(nn::ReLU(nn::ReLUOptions().inplace(true)));
+    }
+    mult = pow(2,n_downsampling);
+
+    ResnetBlockImpl blocks;
+
+    for (int i = 0; i < num_downs; i++){
+        this->model->push_back(ResnetBlockImpl(ngf*mult,ngf*mult));
+//        blocks = ResnetBlockImpl(ngf*mult,ngf*mult,blocks);
+
+    }
+//
+
+    for(int i =0;i<n_downsampling;i++){
+        mult = pow(2,n_downsampling-i);
+        //少out padding
+        this->model->push_back(nn::ConvTranspose2d(nn::ConvTranspose2dOptions(ngf*mult, int(ngf*mult/2), 3).stride(2).padding(1).bias(false).output_padding(1)));
+
+//        this->model->push_back(nn::ConvTranspose2d(nn::ConvTranspose2d(ngf*mult, int(ngf*mult/2),3).stride(2).padding(1).bias(false)));
+        this->model->push_back(nn::BatchNorm2d(int(ngf*mult/2)));
+        this->model->push_back(nn::ReLU(nn::ReLUOptions().inplace(true)));
+
+    }
+    this->model->push_back(nn::ReflectionPad2d(3));
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(ngf, output_nc,7).stride(1).padding(0).bias(true)));
+    this->model->push_back(nn::Tanh());
+    register_module("Res-Net", this->model);
+
+}
+torch::Tensor Resnet_GeneratorImpl::forward(torch::Tensor x){
+    torch::Tensor out = this->model->forward(x);
+        cout<<"reset input: "<<x.sizes()<<endl;
+        cout<<" reset out: "<<out.sizes()<<endl;
+
+    // {IC,256,256} ===> {OC,256,256}
+    return out;
+}
 
 // ----------------------------------------------------------------------
 // struct{UNet_GeneratorImpl}(nn::Module) -> function{forward}
@@ -81,8 +132,35 @@ UNetBlockImpl::UNetBlockImpl(const std::pair<size_t, size_t> outside_nc, const s
 
 
 }
+ResnetBlockImpl::ResnetBlockImpl(int input_nc,int output_nc)
+{
+    this->model->push_back(nn::ReflectionPad2d(1));
+//    this->model->push_back(submodule);
+
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc, output_nc,3).stride(1).padding(0).bias(false)));
+
+    this->model->push_back(nn::BatchNorm2d(input_nc));
+    this->model->push_back(nn::ReLU(nn::ReLUOptions().inplace(true)));
+    this->model->push_back(nn::ReflectionPad2d(1));
+
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc, output_nc,3).stride(1).padding(0).bias(false)));
+
+    this->model->push_back(nn::BatchNorm2d(input_nc));
+
+    register_module("Resnet_Block", this->model);
+
+}
+
+torch::Tensor ResnetBlockImpl::forward(torch::Tensor x) {
+    torch::Tensor out = x +this->model->forward(x);
+//    out = out.add(x);
+    return out;
+}
 
 void UNet_GeneratorImpl::init_weight(){
+    this->model->apply(weights_init);
+};
+void Resnet_GeneratorImpl::init_weight(){
     this->model->apply(weights_init);
 };
 
@@ -118,7 +196,7 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
     size_t mul = 1;
     size_t mul_pre = 1;
     size_t n_layers = 3;
-    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc*2, feature, 4).stride(2).padding(1).bias(true)));  // {IC+OC,256,256} ===> {F,128,128}
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(input_nc+output_nc, feature, 4).stride(2).padding(1).bias(true)));  // {IC+OC,256,256} ===> {F,128,128}
     this->model->push_back(nn::LeakyReLU(nn::LeakyReLUOptions().negative_slope(0.2).inplace(true)));
     for (size_t n = 1; n < n_layers; n++){  // {F,128,128} ===> {4F,32,32}
         mul_pre = mul;
@@ -133,7 +211,7 @@ PatchGAN_DiscriminatorImpl::PatchGAN_DiscriminatorImpl(size_t input_nc,size_t ou
     this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul_pre, feature*mul, 4).stride(1).padding(1).bias(false)));  // {4F,32,32} ===> {8F,31,31}
     this->model->push_back(nn::BatchNorm2d(feature*mul));
     this->model->push_back(nn::LeakyReLU(nn::LeakyReLUOptions().negative_slope(0.2).inplace(true)));
-    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
+    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, output_nc, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
 //    this->model->push_back(nn::Conv2d(nn::Conv2dOptions(feature*mul, 1, 4).stride(1).padding(1).bias(true)));  // {8F,31,31} ===> {1,30,30}
 
     register_module("PatchGAN", this->model);
@@ -148,12 +226,12 @@ void PatchGAN_DiscriminatorImpl::init_weight(){
 // struct{PatchGAN_DiscriminatorImpl}(nn::Module) -> function{forward}
 // ----------------------------------------------------------------------
 torch::Tensor PatchGAN_DiscriminatorImpl::forward(torch::Tensor x){
+    cout<<"d input: "<<x.sizes()<<endl;
 
     torch::Tensor out = this->model->forward(x);
 //    cout<<"out size:"<<out.sizes()<<endl;
     // {IC+OC,256,256} ===> {1,30,30}
-//    cout<<"d input: "<<x.sizes()<<endl;
-//    cout<<"d out: "<<out.sizes()<<endl;
+    cout<<"d out: "<<out.sizes()<<endl;
     return out;
 }
 
